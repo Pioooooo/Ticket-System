@@ -1,7 +1,3 @@
-# ticket-system
-
-CS147 assignment, ACM Class, SJTU
-
 # 火车票管理系统
 
 火车票管理系统为组队作业，共11组，每组由三人组成。
