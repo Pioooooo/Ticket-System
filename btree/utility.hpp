@@ -30,6 +30,13 @@ namespace sjtu {
         pair<U1, U2>& operator=(const pair<U1, U2> &other) {
             first = other.first; second = other.second;
         }
+
+        template<class U1, class U2>
+        pair<U1, U2>& operator=(pair<U1, U2> &other) {
+            first = other.first; second = other.second;
+        }
+
+        ~pair(){}
     };
 
 }
