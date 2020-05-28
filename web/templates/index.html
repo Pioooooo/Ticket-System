@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% set curSide = "首页" %}
+
+{% block content %}
+
+    <div class="row">
+        <h1>查询车票</h1>
+        <form>
+            <label>出发地:</label><input id="inputFrom">
+            <label>目的地：</label><input id="inputTo">
+            <label>日期：</label><input id="inputDate">
+            <label>查询中转</label><input id="inputTransit" type="checkbox">
+            <div>
+                <label>类别：</label>
+                <label>C</label><input name="inputType" type="checkbox" value="0" checked>
+                <label>D</label><input name="inputType" type="checkbox" value="1" checked>
+                <label>G</label><input name="inputType" type="checkbox" value="2" checked>
+                <label>K</label><input name="inputType" type="checkbox" value="3" checked>
+                <label>O</label><input name="inputType" type="checkbox" value="4" checked>
+                <label>T</label><input name="inputType" type="checkbox" value="5" checked>
+                <label>Z</label><input name="inputType" type="checkbox" value="6" checked>
+            </div>
+            <div>
+                <button type="button" id="buttonQuery">查询</button>
+                筛选：
+                <input name="inputSorting" type="radio" value="time" checked><label>最短时间</label>
+                <input name="inputSorting" type="radio" value="price"><label>最低票价</label>
+            </div>
+        </form>
+        <table border="1">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>车次</th>
+                <th>出发站</th>
+                <th>发车时间</th>
+                <th>到达站</th>
+                <th>到达时间</th>
+                <th>票价</th>
+                <th>余票</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="tableTrain"></tbody>
+        </table>
+        <div id="textError"></div>
+    </div>
+
+{% endblock %}
+
+{% block src %}
+
+    <script>
+        let data;
+
+        function createTable() {
+            let table = $("#tableTrain");
+            table.empty();
+            let tot = data.length;
+            data.forEach(function (e, n) {
+                table.append(
+                    $("<tr></tr>").append($("<td>" + (n + 1) + "</td>")
+                    ).append($("<td>" + e[0] + "</td>")
+                    ).append($("<td>" + e[1] + "</td>")
+                    ).append($("<td>" + e[2] + " " + e[3] + "</td>")
+                    ).append($("<td>" + e[4] + "</td>")
+                    ).append($("<td>" + e[5] + " " + e[6] + "</td>")
+                    ).append($("<td>" + e[7] + "</td>")
+                    ).append($("<td>" + e[8] + "</td>")
+                    ).append($("<td><button type='button' onclick=butTicket(" + n + ")>购买</button></td>"))
+                );
+            });
+        }
+
+        function buyTicket(n) {
+            let dat = {
+                "trainID": data[n][0],
+                "date": data[n][2],
+                "from": data[n][1],
+                "to": data[n][4],
+            }
+        }
+
+        $(function () {
+            $("#buttonQuery").click(function () {
+                let dat = {
+                    "from": $("#inputFrom").val(),
+                    "to": $("#inputTo").val(),
+                    "date": $("#inputDate").val(),
+                    "transit": $("#inputTransit").is(":checked"),
+                    "type": $("input[name='inputType']:checked").map(function () {
+                        return this.value;
+                    }),
+                    "sorting": $("input[name='inputSorting']:checked").val()
+                };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "/",
+                    dataType: "json",
+                    data: JSON.stringify(dat),
+                    success: function (ret) {
+                        if (ret['e'])
+                            $("#textError").html("Query failed! Please retry");
+                        else {
+                            data = [];
+                            let ar = ret["result"].join().split(/[ \n]/);
+                            for (let i = 0; i < ret["tot"]; i++)
+                                data.push([].concat(ar.slice(11 * i, 11 * i + 4), ar.slice(11 * i + 5, 11 * i + 8), [parseFloat(ar[11 * i + 8]).toFixed(2), parseInt(ar[11 * i + 9])]));
+                            createTable();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+{% endblock %}

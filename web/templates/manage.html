@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% set curSide = "管理" %}
+
+{% block content %}
+
+    <div>
+        <h1>管理</h1>
+        <form>
+            <div>
+                <lable>Username</lable>
+                <input type="text" id="inputUsername">
+            </div>
+            <div>
+                <lable>Password</lable>
+                <input type="password" id="inputPassword">
+            </div>
+            <div>
+                <lable>Name</lable>
+                <input type="text" id="inputName">
+            </div>
+            <div>
+                <lable>Mail</lable>
+                <input type="text" id="inputMail">
+            </div>
+            <div>
+                <lable>Privilege</lable>
+                <input type="Number" id="inputPrivilege">
+            </div>
+            <div>
+                <button type="button" id="buttonAddUser">Add User</button>
+                <button type="button" id="buttonQueryProfile">Query Profile</button>
+                <button type="button" id="buttonModifyProfile">Modify Profile</button>
+            </div>
+        </form>
+        <form>
+            <div>
+                <lable>Train ID</lable>
+                <input type="text" id="inputTrainId">
+            </div>
+            <div>
+                <lable>Station Number</lable>
+                <input type="number" id="inputStationNumber">
+            </div>
+            <div>
+                <lable>Seat Number</lable>
+                <input type="number" id="inputSeatNumber">
+            </div>
+            <div>
+                <lable>Stations</lable>
+                <input type="text" id="inputStations">
+            </div>
+            <div>
+                <lable>Prices</lable>
+                <input type="text" id="inputPrices">
+            </div>
+            <div>
+                <lable>Start Time</lable>
+                <input type="time" id="inputStartTime">
+            </div>
+            <div>
+                <lable>Travel Times</lable>
+                <input type="text" id="inputTravelTimes">
+            </div>
+            <div>
+                <lable>Stopover Times</lable>
+                <input type="text" id="inputStopoverTimes">
+            </div>
+            <div>
+                <lable>Sale Dates</lable>
+                <input type="text" id="inputSaleDates">
+            </div>
+            <div>
+                <lable>Train Type</lable>
+                <input type="text" id="inputTrainType">
+            </div>
+            <div>
+                <button type="button" id="buttonAddTrain">Add Train</button>
+                <button type="button" id="buttonReleaseTrain">Release Train</button>
+                <button type="button" id="buttonDeleteTrain">Delete Train</button>
+                <button type="button" id="buttonQueryTrain">Query Train</button>
+            </div>
+        </form>
+        <div>
+            <label id="textTrainID"></label>
+            <label id="textTrainType"></label>
+        </div>
+        <table border="1">
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block src %}
+
+    <script>
+        $(function () {
+        });
+    </script>
+
+{% endblock %}
