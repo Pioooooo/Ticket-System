@@ -16,12 +16,31 @@ def index():
         else:
             return render_template('index.html', ses=session)
     else:
-        if request.json['transit']:
-            cmd = ['query_transfer']
+        if request.json['type'] == 0:
+            ret = core.exec(
+                ['query_transfer', '-s', request.json['from'], '-t', request.json['to'], '-d', request.json['date'],
+                 '-p', request.json['sorting']])
+            return {'e': 0, 'tot': int(ret[0]), 'result': ret[1:]}
+        elif request.json['type'] == 1:
+            ret = core.exec(
+                ['query_ticket', '-s', request.json['from'], '-t', request.json['to'], '-d', request.json['date'], '-p',
+                 request.json['sorting']])
+            return {'e': 0, 'tot': int(ret[0]), 'result': ret[1:]}
+        elif request.json['type'] == 2:
+            if session.get('username') is None:
+                return {'e': -1, 'msg': 'User is not logged in.'}
+            ret = core.exec(
+                ['buy_ticket', '-u', session.get('username'), '-i', request.json['trainID'], '-d', request.json['date'],
+                 '-n', str(request.json['count']), '-f', request.json['from'], '-t', request.json['to'], '-q',
+                 str(request.json['wait']).lower()])
+            if ret[0] == '-1':
+                return {'e': -1, 'msg': 'Buy ticket failed.'}
+            elif ret[0] == 'queue':
+                return {'e': 0, 'type': 1}
+            else:
+                return {'e': 0, 'type': 0, 'tot': ret[0]}
         else:
-            cmd = ['query_ticket']
-        ret = core.exec(cmd + ['-s', request.json['from'], '-t', request.json['to'], '-d', request.json['date']])
-        return {'e': 0, 'tot': int(ret[0]), 'result': ret[1:]}
+            return {'e': -100, 'msg': 'Unrecognized request.'}
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -32,17 +51,25 @@ def login():
         else:
             return redirect(url_for(request.args.get('f', 'index')))
     else:
-        if request.json['type'] == 'login':
+        if request.json['type'] == 0:
             ret = core.exec(['login', '-u', request.json['username'], '-p', request.json['password']])
             if int(ret[0]):
                 return {'e': -1}
             else:
                 session['username'] = request.json['username']
                 return {'e': 0}
-        elif request.json['type'] == 'register':
+        elif request.json['type'] == 1:
             ret = core.exec(['add_user', '-c', 'root', '-u', request.json['username'], '-p', request.json['password'],
                              '-n', request.json['name'], '-m', request.json['email'], '-g', '1'])
             return {'e': int(ret[0])}
+        elif request.json['type'] == 2:
+            if session.get('username') is None:
+                return {'e': -1, 'msg': 'User is not logged in.'}
+            ret = core.exec(['logout', '-u', session.get('username')])
+            session.pop('username')
+            return {'e': int(ret[0])}
+        else:
+            return {'e': -100, 'msg': 'Unrecognized request.'}
 
 
 @app.route('/manage')

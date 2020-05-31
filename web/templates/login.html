@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -75,7 +75,7 @@
     <li><a id="tabLogin" href="#divLogin" data-toggle="tab"></a></li>
 </ul>
 <div class="tab-pane fade show active" id="divLogin">
-    <form class="form-login" id="formLogin" method="post">
+    <form class="form-login" id="formLogin">
         <img class="mb-4" src="{{ url_for('static',filename='/image/icon-512x512.png') }}" alt="" width="72"
              height="72">
         <input type="text" name="inputUsername" class="form-control" placeholder="用户名" required autofocus
@@ -97,7 +97,7 @@
 </div>
 
 <div class="tab-pane fade" id="divRegister">
-    <form class="form-login" id="formRegister" method="post">
+    <form class="form-login" id="formRegister">
         <img class="mb-4" src="{{ url_for('static',filename='/image/icon-512x512.png') }}" alt="" width="72"
              height="72">
         <input type="text" name="inputUsername" class="form-control" placeholder="用户名" required autofocus
@@ -124,25 +124,25 @@
 <script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script>
 <script>
     $(function () {
-        $("input[name='inputUsername']").on("input", function (event) {
+        $("input[name='inputUsername']").on("input", function () {
             if (this.validity.patternMismatch)
                 this.setCustomValidity("用户名只能包含大小写字母与数字，长度在8-64之间。");
             else
                 this.setCustomValidity("");
         });
-        $("input[name='inputPassword']").on("input", function (event) {
+        $("input[name='inputPassword']").on("input", function () {
             if (this.validity.patternMismatch)
                 this.setCustomValidity("密码必须包含大小写字母、数字、特殊符号，长度在8-64之间。");
             else
                 this.setCustomValidity("");
         });
-        $("input[name='inputName']").on("input", function (event) {
+        $("input[name='inputName']").on("input", function () {
             if (this.validity.patternMismatch)
                 this.setCustomValidity("名字不能包含空格，长度在2-64之间。");
             else
                 this.setCustomValidity("");
         });
-        $("input[name='inputEmail']").on("input", function (event) {
+        $("input[name='inputEmail']").on("input", function () {
             if (this.validity.typeMismatch)
                 this.setCustomValidity("请输入正确的邮件格式。");
             else
@@ -150,9 +150,10 @@
         });
         $("#formLogin").submit(function (e) {
             e.preventDefault();
+            e.stopPropagation();
             let form = $("#formLogin");
             let dat = {
-                "type": "login",
+                "type": 0,
                 "username": form.children("input[name='inputUsername']").val(),
                 "password": form.children("input[name='inputPassword']").val()
             };
@@ -163,7 +164,7 @@
                 dataType: "json",
                 data: JSON.stringify(dat),
                 success: function (ret) {
-                    if (ret['e'])
+                    if (ret["e"])
                         $("#toastLoginFailed").toast("show");
                     else
                         window.location.replace("{{ url_for(f) }}")
@@ -173,9 +174,10 @@
         });
         $("#formRegister").submit(function (e) {
             e.preventDefault();
+            e.stopPropagation();
             let form = $("#formRegister");
             let dat = {
-                "type": "register",
+                "type": 1,
                 "username": form.children("input[name='inputUsername']").val(),
                 "password": form.children("input[name='inputPassword']").val(),
                 "name": form.children("input[name='inputName']").val(),
@@ -188,11 +190,11 @@
                 dataType: "json",
                 data: JSON.stringify(dat),
                 success: function (ret) {
-                    if (ret['e'])
+                    if (ret["e"])
                         $("#toastRegisterFailed").toast("show");
                     else {
                         let dat = {
-                            "type": "login",
+                            "type": 0,
                             "username": form.children("input[name='inputUsername']").val(),
                             "password": form.children("input[name='inputPassword']").val()
                         };
@@ -203,7 +205,10 @@
                             dataType: "json",
                             data: JSON.stringify(dat),
                             success: function () {
-                                window.location.replace("{{ url_for(f) }}")
+                                if (ret["e"])
+                                    $("#toastLoginFailed").toast("show");
+                                else
+                                    window.location.replace("{{ url_for(f) }}")
                             }
                         });
                     }

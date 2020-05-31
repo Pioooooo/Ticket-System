@@ -4,46 +4,68 @@
 
 {% block content %}
 
-    <div class="row">
-        <h1>查询车票</h1>
-        <form>
-            <label>出发地:</label><input id="inputFrom">
-            <label>目的地：</label><input id="inputTo">
-            <label>日期：</label><input id="inputDate">
-            <label>查询中转</label><input id="inputTransit" type="checkbox">
-            <div>
-                <label>类别：</label>
-                <label>C</label><input name="inputType" type="checkbox" value="0" checked>
-                <label>D</label><input name="inputType" type="checkbox" value="1" checked>
-                <label>G</label><input name="inputType" type="checkbox" value="2" checked>
-                <label>K</label><input name="inputType" type="checkbox" value="3" checked>
-                <label>O</label><input name="inputType" type="checkbox" value="4" checked>
-                <label>T</label><input name="inputType" type="checkbox" value="5" checked>
-                <label>Z</label><input name="inputType" type="checkbox" value="6" checked>
+    <div class="col-auto py-md-3 bd-content">
+        <h2 class="mb-3">查询车票</h2>
+        <form id="formQuery">
+            <div class="form-row mb-2">
+                <div class="col-md-4">
+                    <label for="inputFrom">出发地</label>
+                    <input class="form-control" id="inputFrom" pattern="^\S{2,64}$" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputTo">目的地</label>
+                    <input class="form-control" id="inputTo" pattern="^\S{2,64}$" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputDate">日期</label>
+                    <input class="form-control" type="date" id="inputDate" required>
+                </div>
             </div>
-            <div>
-                <button type="button" id="buttonQuery">查询</button>
-                筛选：
-                <input name="inputSorting" type="radio" value="time" checked><label>最短时间</label>
-                <input name="inputSorting" type="radio" value="price"><label>最低票价</label>
+            <div class="form-row align-items-center mb-2">
+                <div class="col-sm-1">筛选:</div>
+                <div class="col-sm-7">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input class="custom-control-input" name="inputSorting" type="radio" id="inputSorting0"
+                               value="time"
+                               checked>
+                        <label class="custom-control-label" for="inputSorting0">最短时间</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input class="custom-control-input" name="inputSorting" type="radio" id="inputSorting1"
+                               value="cost">
+                        <label class="custom-control-label" for="inputSorting1">最低票价</label>
+                    </div>
+                </div>
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" id="inputTransit" type="checkbox">
+                    <label class="custom-control-label" for="inputTransit">查询中转</label>
+                </div>
+                <button class="btn btn-primary ml-auto" type="submit" id="buttonQuery">查询</button>
             </div>
         </form>
-        <table border="1">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>车次</th>
-                <th>出发站</th>
-                <th>发车时间</th>
-                <th>到达站</th>
-                <th>到达时间</th>
-                <th>票价</th>
-                <th>余票</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody id="tableTrain"></tbody>
-        </table>
+        <div class="table-responsive" style="display: none">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th style="width: 2%" scope="col">#</th>
+                    <th style="width: 20%" scope="col">车次</th>
+                    <th style="width: 10%" scope="col">出发站</th>
+                    <th style="width: 12%" scope="col">发车时间</th>
+                    <th style="width: 10%" scope="col">到达站</th>
+                    <th style="width: 12%" scope="col">到达时间</th>
+                    <th style="width: 10%" scope="col">票价</th>
+                    <th style="width: 10%" scope="col">余票</th>
+                    <th style="width: 14%">
+                        <div class="custom-control custom-checkbox">
+                            <input class="custom-control-input" id="inputWaiting" type="checkbox">
+                            <label class="custom-control-label" for="inputWaiting">候补</label>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="tableTrain"></tbody>
+            </table>
+        </div>
         <div id="textError"></div>
     </div>
 
@@ -54,44 +76,97 @@
     <script>
         let data;
 
-        function createTable() {
-            let table = $("#tableTrain");
-            table.empty();
-            let tot = data.length;
-            data.forEach(function (e, n) {
-                table.append(
-                    $("<tr></tr>").append($("<td>" + (n + 1) + "</td>")
-                    ).append($("<td>" + e[0] + "</td>")
-                    ).append($("<td>" + e[1] + "</td>")
-                    ).append($("<td>" + e[2] + " " + e[3] + "</td>")
-                    ).append($("<td>" + e[4] + "</td>")
-                    ).append($("<td>" + e[5] + " " + e[6] + "</td>")
-                    ).append($("<td>" + e[7] + "</td>")
-                    ).append($("<td>" + e[8] + "</td>")
-                    ).append($("<td><button type='button' onclick=butTicket(" + n + ")>购买</button></td>"))
-                );
-            });
-        }
-
         function buyTicket(n) {
+            let iptCount = $(`#inputCount${n}`);
             let dat = {
+                "type": 2,
                 "trainID": data[n][0],
                 "date": data[n][2],
                 "from": data[n][1],
                 "to": data[n][4],
-            }
+                "wait": $("#inputWaiting").is(":checked"),
+                "count": parseInt(iptCount.val())
+            };
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/",
+                dataType: "json",
+                data: JSON.stringify(dat),
+                success: function (ret) {
+                    if (ret["e"])
+                        $("#textError").html("购票失败，请重试。");
+                    else if (ret["tot"] == "queue")
+                        showMessage("余票不足，已加入候补购票队列。");
+                    else
+                        showMessage(`购票成功，总价${ret["tot"]}￥`);
+                }
+            });
+        }
+
+        function createTable() {
+            $(".table-responsive").show();
+            let table = $("#tableTrain");
+            table.empty();
+            let tot = data.length;
+            data.forEach(function (e, n) {
+                table.append($(`<tr><th class="align-middle" scope="row">${n + 1}</th>` +
+                    `<td class="align-middle">${e[0]}</td>` +
+                    `<td class="align-middle">${e[1]}</td>` +
+                    `<td class="align-middle">${e[2]}  ${e[3]}</td>` +
+                    `<td class="align-middle">${e[4]}</td>` +
+                    `<td class="align-middle">${e[5]}  ${e[6]}</td>` +
+                    `<td class="align-middle">${e[7]}</td>` +
+                    `<td class="align-middle">${e[8]}</td>` +
+                    `<td class="align-middle"><form class="input-group" id="formCount${n}">` +
+                    `<input class="form-control" id="inputCount${n}" type="text" value="1" pattern="^[1-9]\\d*$">` +
+                    `<div class="input-group-append">` +
+                    `<button class="btn btn-sm btn-outline-primary" type="submit">购买</button>` +
+                    `</div></form></td></tr>`));
+                $(`#inputCount${n}`).on("input", function () {
+                    if (this.validity.patternMismatch)
+                        this.setCustomValidity("请输入正确的购买票数。");
+                    else
+                        this.setCustomValidity("");
+                });
+                $(`#formCount${n}`).submit(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    buyTicket(n);
+                })
+            });
+            if (!tot)
+                table.append($(`<tr><td class="align-middle text-center" colspan="10">无搜索结果。</td></tr>`));
         }
 
         $(function () {
-            $("#buttonQuery").click(function () {
+            $("#inputFrom").on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("城市名不能包含空格，长度在2-64之间。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("#inputTo").on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("城市名不能包含空格，长度在2-64之间。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("#inputDate").on("input", function () {
+                if (this.validity.typeMismatch)
+                    this.setCustomValidity("请输入正确的日期格式。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("#formQuery").submit(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                let date = $("#inputDate").val().replace(/[0-9]*-/, "");
                 let dat = {
+                    "type": $("#inputTransit").is(":checked") ? 0 : 1,
                     "from": $("#inputFrom").val(),
                     "to": $("#inputTo").val(),
-                    "date": $("#inputDate").val(),
-                    "transit": $("#inputTransit").is(":checked"),
-                    "type": $("input[name='inputType']:checked").map(function () {
-                        return this.value;
-                    }),
+                    "date": date,
                     "sorting": $("input[name='inputSorting']:checked").val()
                 };
                 $.ajax({
@@ -105,9 +180,10 @@
                             $("#textError").html("Query failed! Please retry");
                         else {
                             data = [];
-                            let ar = ret["result"].join().split(/[ \n]/);
-                            for (let i = 0; i < ret["tot"]; i++)
-                                data.push([].concat(ar.slice(11 * i, 11 * i + 4), ar.slice(11 * i + 5, 11 * i + 8), [parseFloat(ar[11 * i + 8]).toFixed(2), parseInt(ar[11 * i + 9])]));
+                            ret["result"].forEach(function (row, ind) {
+                                let e = row.split(" ");
+                                data.push([].concat(e.slice(0, 4), e.slice(5, 8), [parseFloat(e[8]).toFixed(2), parseInt(e[9])]));
+                            });
                             createTable();
                         }
                     }

@@ -36,7 +36,7 @@ class Executable:
             ln = self.__readline(0.1)
             if not ln:
                 break
-            ret.append(ln)
+            ret.append(ln.rstrip('\n'))
         return ret
 
 

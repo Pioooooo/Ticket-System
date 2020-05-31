@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -50,8 +50,13 @@
             <li class="nav-item {% if curSide == "订单" %}active{% endif %}">
                 <a class="nav-link" href="/order">订单</a>
             </li>
-            <li class="nav-item {% if curSide == "账户" %}active{% endif %}">
-                <a class="nav-link" href="/account">{{ session["username"] }}</a>
+            <li class="nav-item dropdown {% if curSide == "账户" %}active{% endif %}">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="/account">{{ session["username"] }}</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/profile">个人资料</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" id="buttonLogout">登出</a>
+                </div>
             </li>
         </ul>
     </div>
@@ -59,6 +64,22 @@
 
 <main class="container">
     {% block content %}{% endblock %}
+    <div class="modal fade" id="modalMessage">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">通知</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="textMessage"></div>
+                <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <footer class="footer">
@@ -70,5 +91,34 @@
 </body>
 <script src="{{ url_for('static', filename='/js/jquery-3.5.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script>
+<script>
+    function showMessage(html) {
+        let modal = $("#modalMessage");
+        modal.modal("hide");
+        $("#textMessage").html(html);
+        modal.modal("show");
+    }
+
+    $(function () {
+        $("#buttonLogout").click(function () {
+            let dat = {
+                "type": 2
+            };
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/login",
+                dataType: "json",
+                data: JSON.stringify(dat),
+                success: function (ret) {
+                    if (ret["e"])
+                        showMessage("登出失败，请稍后再试。");
+                    else
+                        window.location.replace("/login");
+                }
+            });
+        });
+    });
+</script>
 {% block src %}{% endblock %}
 </html>
