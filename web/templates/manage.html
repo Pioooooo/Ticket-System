@@ -8,80 +8,84 @@
         <h2 class="mb-3">管理</h2>
         <div class="row">
             <div class="list-group col-3">
-                <a class="list-group-item list-group-item-action active" data-toggle="list" href="#divUser">用户操作</a>
-                <a class="list-group-item list-group-item-action" data-toggle="list" href="#divTrain">列车操作</a>
+                <a class="list-group-item list-group-item-action active" data-toggle="tab" href="#divUser">用户操作</a>
+                <a class="list-group-item list-group-item-action" data-toggle="tab" href="#divTrain">列车操作</a>
             </div>
             <div class="tab-content col-8">
                 <div class="tab-pane fade show active" id="divUser">
-                    <form>
-                        <div>
-                            <lable>Username</lable>
-                            <input type="text" id="inputUsername">
+                    <form id="formUser">
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <lable>用户名</lable>
+                                <input class="form-control" type="text" id="inputUsername" pattern="^\w{8,64}$"
+                                       autofocus required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>密码</lable>
+                                <input class="form-control" type="password" id="inputPassword"
+                                       pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-!$%^&*()_+|~=`{}[:;<>?,.@#\]]).{8,64}$">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>性名</lable>
+                                <input class="form-control" type="text" id="inputName" pattern="^\S{2,64}$">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>邮箱</lable>
+                                <input class="form-control" type="email" id="inputMail">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>权限</lable>
+                                <input class="form-control" type="text" id="inputPrivilege" pattern="^[1-9]\d*$">
+                            </div>
                         </div>
                         <div>
-                            <lable>Password</lable>
-                            <input type="password" id="inputPassword">
-                        </div>
-                        <div>
-                            <lable>Name</lable>
-                            <input type="text" id="inputName">
-                        </div>
-                        <div>
-                            <lable>Mail</lable>
-                            <input type="text" id="inputMail">
-                        </div>
-                        <div>
-                            <lable>Privilege</lable>
-                            <input type="Number" id="inputPrivilege">
-                        </div>
-                        <div>
-                            <button type="button" id="buttonAddUser">Add User</button>
-                            <button type="button" id="buttonQueryProfile">Query Profile</button>
-                            <button type="button" id="buttonModifyProfile">Modify Profile</button>
+                            <button class="btn btn-outline-primary mr-2" type="submit" id="buttonQueryProfile">查询
+                            </button>
+                            <button class="btn btn-outline-primary mr-2" type="submit" id="buttonAddUser">添加</button>
+                            <button class="btn btn-outline-primary mr-2" type="submit" id="buttonModifyProfile">修改
+                            </button>
                         </div>
                     </form>
                 </div>
                 <div class="tab-pane fade" id="divTrain">
-                    <form>
-                        <div>
-                            <lable>Train ID</lable>
-                            <input type="text" id="inputTrainId">
-                        </div>
-                        <div>
-                            <lable>Station Number</lable>
-                            <input type="number" id="inputStationNumber">
-                        </div>
-                        <div>
-                            <lable>Seat Number</lable>
-                            <input type="number" id="inputSeatNumber">
-                        </div>
-                        <div>
-                            <lable>Stations</lable>
-                            <input type="text" id="inputStations">
-                        </div>
-                        <div>
-                            <lable>Prices</lable>
-                            <input type="text" id="inputPrices">
-                        </div>
-                        <div>
-                            <lable>Start Time</lable>
-                            <input type="time" id="inputStartTime">
-                        </div>
-                        <div>
-                            <lable>Travel Times</lable>
-                            <input type="text" id="inputTravelTimes">
-                        </div>
-                        <div>
-                            <lable>Stopover Times</lable>
-                            <input type="text" id="inputStopoverTimes">
-                        </div>
-                        <div>
-                            <lable>Sale Dates</lable>
-                            <input type="text" id="inputSaleDates">
-                        </div>
-                        <div>
-                            <lable>Train Type</lable>
-                            <input type="text" id="inputTrainType">
+                    <form id="formTrain">
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <lable>Train ID</lable>
+                                <input class="form-control" type="text" id="inputTrainId">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>Station Number</lable>
+                                <input class="form-control" type="text" id="inputStationNumber">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>Seat Number</lable>
+                                <input class="form-control" type="text" id="inputSeatNumber">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>Stations</lable>
+                                <input class="form-control" type="text" id="inputStations">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>Prices</lable>
+                                <input class="form-control" type="text" id="inputPrices">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>Start Time</lable>
+                                <input class="form-control" type="time" id="inputStartTime">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>Travel Times</lable>
+                                <input class="form-control" type="text" id="inputTravelTimes">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>Stopover Times</lable>
+                                <input class="form-control" type="text" id="inputStopoverTimes">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <lable>Sale Dates</lable>
+                                <input class="form-control" type="text" id="inputSaleDates">
+                            </div>
                         </div>
                         <div>
                             <button type="button" id="buttonAddTrain">Add Train</button>
@@ -97,8 +101,6 @@
             <label id="textTrainID"></label>
             <label id="textTrainType"></label>
         </div>
-        <table border="1">
-        </table>
     </div>
 
 {% endblock %}
@@ -107,6 +109,42 @@
 
     <script>
         $(function () {
+            $("input[name='inputUsername']").on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("用户名只能包含大小写字母与数字，长度在8-64之间。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("input[name='inputPassword']").on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("密码必须包含大小写字母、数字、特殊符号，长度在8-64之间。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("input[name='inputName']").on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("名字不能包含空格，长度在2-64之间。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("input[name='inputEmail']").on("input", function () {
+                if (this.validity.typeMismatch)
+                    this.setCustomValidity("请输入正确的邮件格式。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("a[data-toggle='tab']").on("shown.bs.tab", function (e) {
+                $(`#${e.target.href.split("#")[1]} input`)[0].focus();
+            });
+            $("#buttonQueryProfile").click(function () {
+                $("#formUser input").not("#inputUsername").prop("required", false);
+            });
+            $("#buttonAddUser").click(function () {
+                $("#formUser input").not("#inputUsername").prop("required", true);
+            });
+            $("#buttonModifyProfile").click(function () {
+                $("#formUser input").not("#inputUsername").prop("required", false);
+            });
         });
     </script>
 

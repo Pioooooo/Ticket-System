@@ -10,11 +10,11 @@
             <div class="form-row mb-2">
                 <div class="col-md-4">
                     <label for="inputFrom">出发地</label>
-                    <input class="form-control" id="inputFrom" pattern="^\S{2,64}$" required>
+                    <input class="form-control" type="text" id="inputFrom" pattern="^\S{2,64}$" required autofocus>
                 </div>
                 <div class="col-md-4">
                     <label for="inputTo">目的地</label>
-                    <input class="form-control" id="inputTo" pattern="^\S{2,64}$" required>
+                    <input class="form-control" type="text" id="inputTo" pattern="^\S{2,64}$" required>
                 </div>
                 <div class="col-md-4">
                     <label for="inputDate">日期</label>
@@ -40,7 +40,7 @@
                     <input class="custom-control-input" id="inputTransit" type="checkbox">
                     <label class="custom-control-label" for="inputTransit">查询中转</label>
                 </div>
-                <button class="btn btn-primary ml-auto" type="submit" id="buttonQuery">查询</button>
+                <button class="btn btn-outline-primary ml-auto" type="submit" id="buttonQuery">查询</button>
             </div>
         </form>
         <div class="table-responsive" style="display: none">

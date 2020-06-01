@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="author" content="Pioooooo">
     <title>登录 · Ticket System</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='/image/favicon.ico') }}">
     <link href="{{ url_for('static', filename='/css/bootstrap.min.css') }}" rel="stylesheet">
 
     <style>
@@ -78,11 +79,15 @@
     <form class="form-login" id="formLogin">
         <img class="mb-4" src="{{ url_for('static',filename='/image/icon-512x512.png') }}" alt="" width="72"
              height="72">
-        <input type="text" name="inputUsername" class="form-control" placeholder="用户名" required autofocus
-               pattern="^\w{8,64}$">
-        <input type="password" name="inputPassword" class="form-control" placeholder="密码" required
-               pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-!$%^&*()_+|~=`{}[:;<>?,.@#\]]).{8,64}$">
-        <label><a onclick="$('#tabRegister').trigger('click');">没有账号？现在注册</a></label>
+        <input type="text" name="inputUsername" class="form-control" placeholder="用户名" pattern="^\w{8,64}$" required
+               autofocus>
+        <input type="password" name="inputPassword" class="form-control" placeholder="密码"
+               pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-!$%^&*()_+|~=`{}[:;<>?,.@#\]]).{8,64}$" required>
+        <label>
+            <a onclick="$('#tabRegister').trigger('click');">
+                没有账号？现在注册
+            </a>
+        </label>
         <button class="btn btn-lg btn-primary btn-block" type="submit" id="buttonLogin">登录</button>
         <div class="toast hide mt-3" id="toastLoginFailed" data-autohide="false">
             <div class="toast-header">
@@ -100,13 +105,17 @@
     <form class="form-login" id="formRegister">
         <img class="mb-4" src="{{ url_for('static',filename='/image/icon-512x512.png') }}" alt="" width="72"
              height="72">
-        <input type="text" name="inputUsername" class="form-control" placeholder="用户名" required autofocus
-               pattern="^\w{8,64}$">
-        <input type="password" name="inputPassword" class="form-control" placeholder="密码" required
-               pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-!$%^&*()_+|~=`{}[:;<>?,.@#\]]).{8,64}$">
-        <input type="text" name="inputName" class="form-control" placeholder="性名" required pattern="^\S{2,64}$">
+        <input type="text" name="inputUsername" class="form-control" placeholder="用户名" pattern="^\w{8,64}$" required
+               autofocus>
+        <input type="password" name="inputPassword" class="form-control" placeholder="密码"
+               pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-!$%^&*()_+|~=`{}[:;<>?,.@#\]]).{8,64}$" required>
+        <input type="text" name="inputName" class="form-control" placeholder="性名" pattern="^\S{2,64}$" required>
         <input type="email" name="inputEmail" class="form-control" placeholder="电子邮箱" required>
-        <label><a onclick="$('#tabLogin').trigger('click');">已有账号？前去登录</a></label>
+        <label>
+            <a onclick="$('#tabLogin').trigger('click');">
+                已有账号？前去登录
+            </a>
+        </label>
         <button class="btn btn-lg btn-primary btn-block" type="submit">注册</button>
         <div class="toast hide mt-3" id="toastRegisterFailed" data-autohide="false">
             <div class="toast-header">
@@ -147,6 +156,9 @@
                 this.setCustomValidity("请输入正确的邮件格式。");
             else
                 this.setCustomValidity("");
+        });
+        $("a[data-toggle='tab']").on("shown.bs.tab", function (e) {
+            $(`#${e.target.href.split("#")[1]} input`)[0].focus();
         });
         $("#formLogin").submit(function (e) {
             e.preventDefault();
