@@ -41,6 +41,8 @@ int main(int argc, char *argv[])
 	myTest test;
 	test.addPattern({"query_ticket"}, "2\nHAPPY_TRAIN 中院 08-17 05:24 -> 下院 08-17 15:24 514 1000\nHAPPY_TRAIN 中院 08-17 05:24 -> 下院 08-17 15:24 514 1000")
 		.addPattern({"query_transfer"}, "2\nHAPPY_TRAIN 中院 08-17 05:24 -> 下院 08-17 15:24 514 1000\nHAPPY_TRAIN 中院 08-17 05:24 -> 下院 08-17 15:24 514 1000")
+		.addPattern({"query_profile"}, "Pioooooo 名字 mail@mail.com 3")
+		.addPattern({"modify_profile"}, "Pioooooo1 名字一 mail1@mail1.com1 4")
 		.addPattern({"buy_ticket", "-q true"}, "queue");
 
 	std::string tmp;

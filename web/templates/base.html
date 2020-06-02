@@ -7,6 +7,7 @@
     <title>{{ curSide }} · Ticket System</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='/image/favicon.ico') }}">
     <link href="{{ url_for('static', filename='/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/feather.css') }}">
 
     <style>
         html {
@@ -80,6 +81,9 @@
             </div>
         </div>
     </div>
+    <div style="min-height: 200px">
+        <div class="col-2" style="position: absolute; top: 70px; right: 0;" id="divToasts"></div>
+    </div>
 </main>
 
 <footer class="footer">
@@ -99,10 +103,33 @@
         modal.modal("show");
     }
 
+    function showInfo(html) {
+        let box = $("#divToasts");
+        box.append(`<div class="toast" id="toastInfo" data-delay="2000">` +
+            `<div class="toast-header"><strong class="mr-auto">Ticket System</strong>` +
+            `<button type="button" class="ml-2 mb-1 close" data-dismiss="toast"><span>&times;</span></button></div>` +
+            `<div class="toast-body">${html}</div></div>`);
+        box.children().last().toast("show");
+    }
+
     $(function () {
+        $.fn.inputFilter = function (inputFilter) {
+            return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function () {
+                if (inputFilter(this.value)) {
+                    this.oldValue = this.value;
+                    this.oldSelectionStart = this.selectionStart;
+                    this.oldSelectionEnd = this.selectionEnd;
+                } else if (this.hasOwnProperty("oldValue")) {
+                    this.value = this.oldValue;
+                    this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                } else {
+                    this.value = "";
+                }
+            });
+        };
         $("#buttonLogout").click(function () {
             let dat = {
-                "type": 2
+                "op": 2
             };
             $.ajax({
                 type: "POST",

@@ -10,11 +10,12 @@
             <div class="form-row mb-2">
                 <div class="col-md-4">
                     <label for="inputFrom">出发地</label>
-                    <input class="form-control" type="text" id="inputFrom" pattern="^\S{2,64}$" required autofocus>
+                    <input class="form-control" type="text" id="inputFrom" pattern="^[\u4e00-\u9fa5]{1,10}$" required
+                           autofocus>
                 </div>
                 <div class="col-md-4">
                     <label for="inputTo">目的地</label>
-                    <input class="form-control" type="text" id="inputTo" pattern="^\S{2,64}$" required>
+                    <input class="form-control" type="text" id="inputTo" pattern="^[\u4e00-\u9fa5]{1,10}$" required>
                 </div>
                 <div class="col-md-4">
                     <label for="inputDate">日期</label>
@@ -79,7 +80,7 @@
         function buyTicket(n) {
             let iptCount = $(`#inputCount${n}`);
             let dat = {
-                "type": 2,
+                "op": 2,
                 "trainID": data[n][0],
                 "date": data[n][2],
                 "from": data[n][1],
@@ -95,8 +96,8 @@
                 data: JSON.stringify(dat),
                 success: function (ret) {
                     if (ret["e"])
-                        $("#textError").html("购票失败，请重试。");
-                    else if (ret["tot"] == "queue")
+                        showMessage("购票失败，请重试。");
+                    else if (ret["tot"] === "queue")
                         showMessage("余票不足，已加入候补购票队列。");
                     else
                         showMessage(`购票成功，总价${ret["tot"]}￥`);
@@ -142,13 +143,13 @@
         $(function () {
             $("#inputFrom").on("input", function () {
                 if (this.validity.patternMismatch)
-                    this.setCustomValidity("城市名不能包含空格，长度在2-64之间。");
+                    this.setCustomValidity("城市名为汉字，长度在不超过10。");
                 else
                     this.setCustomValidity("");
             });
             $("#inputTo").on("input", function () {
                 if (this.validity.patternMismatch)
-                    this.setCustomValidity("城市名不能包含空格，长度在2-64之间。");
+                    this.setCustomValidity("城市名为汉字，长度在不超过10。");
                 else
                     this.setCustomValidity("");
             });
@@ -163,7 +164,7 @@
                 e.stopPropagation();
                 let date = $("#inputDate").val().replace(/[0-9]*-/, "");
                 let dat = {
-                    "type": $("#inputTransit").is(":checked") ? 0 : 1,
+                    "op": $("#inputTransit").is(":checked") ? 0 : 1,
                     "from": $("#inputFrom").val(),
                     "to": $("#inputTo").val(),
                     "date": date,

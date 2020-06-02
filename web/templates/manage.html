@@ -12,56 +12,56 @@
                 <a class="list-group-item list-group-item-action" data-toggle="tab" href="#divTrain">列车操作</a>
             </div>
             <div class="tab-content col-8">
-                <div class="tab-pane fade show active" id="divUser">
-                    <form id="formUser">
+                <div class="tab-pane fade" id="divUser">
+                    <form>
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
-                                <lable>用户名</lable>
-                                <input class="form-control" type="text" id="inputUsername" pattern="^\w{8,64}$"
+                                <lable for="inputUsername">用户名</lable>
+                                <input class="form-control" type="text" id="inputUsername" pattern="^[a-zA-Z]\w{0,19}$"
                                        autofocus required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable>密码</lable>
-                                <input class="form-control" type="password" id="inputPassword"
-                                       pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-!$%^&*()_+|~=`{}[:;<>?,.@#\]]).{8,64}$">
+                                <lable for="inputPassword">密码</lable>
+                                <input class="form-control" type="password" id="inputPassword" pattern="^\w{6,30}$">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable>性名</lable>
-                                <input class="form-control" type="text" id="inputName" pattern="^\S{2,64}$">
+                                <lable for="inputName">姓名</lable>
+                                <input class="form-control" type="text" id="inputName" pattern="^[\u4e00-\u9fa5]{2,5}$">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable>邮箱</lable>
-                                <input class="form-control" type="email" id="inputMail">
+                                <lable for="inputEmail">邮箱</lable>
+                                <input class="form-control" type="email" id="inputEmail">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable>权限</lable>
+                                <lable for="inputPrivilege">权限</lable>
                                 <input class="form-control" type="text" id="inputPrivilege" pattern="^[1-9]\d*$">
                             </div>
                         </div>
-                        <div>
-                            <button class="btn btn-outline-primary mr-2" type="submit" id="buttonQueryProfile">查询
+                        <div class="float-right">
+                            <button class="btn btn-outline-primary ml-2" type="submit" id="buttonQueryProfile">查询
                             </button>
-                            <button class="btn btn-outline-primary mr-2" type="submit" id="buttonAddUser">添加</button>
-                            <button class="btn btn-outline-primary mr-2" type="submit" id="buttonModifyProfile">修改
+                            <button class="btn btn-outline-primary ml-2" type="submit" id="buttonAddUser">添加</button>
+                            <button class="btn btn-outline-primary ml-2" type="submit" id="buttonModifyProfile">修改
                             </button>
                         </div>
                     </form>
                 </div>
-                <div class="tab-pane fade" id="divTrain">
+                <div class="tab-pane fade show active" id="divTrain">
                     <form id="formTrain">
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
-                                <lable>Train ID</lable>
+                                <lable for="inputTrainId">车次</lable>
                                 <input class="form-control" type="text" id="inputTrainId">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable>Station Number</lable>
-                                <input class="form-control" type="text" id="inputStationNumber">
+                                <lable for="inputTrainType">类别</lable>
+                                <input class="form-control" type="text" id="inputTrainType">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable>Seat Number</lable>
+                                <lable for="inputSeatNumber">座位数</lable>
                                 <input class="form-control" type="text" id="inputSeatNumber">
                             </div>
+                            <!--
                             <div class="col-md-4 mb-3">
                                 <lable>Stations</lable>
                                 <input class="form-control" type="text" id="inputStations">
@@ -85,13 +85,65 @@
                             <div class="col-md-4 mb-3">
                                 <lable>Sale Dates</lable>
                                 <input class="form-control" type="text" id="inputSaleDates">
-                            </div>
+                            </div>-->
                         </div>
-                        <div>
-                            <button type="button" id="buttonAddTrain">Add Train</button>
-                            <button type="button" id="buttonReleaseTrain">Release Train</button>
-                            <button type="button" id="buttonDeleteTrain">Delete Train</button>
-                            <button type="button" id="buttonQueryTrain">Query Train</button>
+                        <div class="form-row">
+                            <div class="form-group col-md-2 mb-3">
+                                <label for="inputStation0">始发站</label>
+                                <input class="form-control" type="text" id="inputStation0">
+                            </div>
+                            <div class="form-group col-md-2 mb-3">
+                                <label for="hourDepart0">出发时间</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="hourDepart0" maxlength="2">
+                                    <div class="input-group-prepend input-group-append">
+                                        <span class="input-group-text pl-1 pr-1">:</span>
+                                    </div>
+                                    <input class="form-control" type="text" id="minuteDepart0" maxlength="2">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2 mb-3">
+                                <label for="hourDuration0">时长</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="hourDuration0" maxlength="2">
+                                    <div class="input-group-prepend input-group-append">
+                                        <span class="input-group-text pl-1 pr-1">:</span>
+                                    </div>
+                                    <input class="form-control" type="text" id="minuteDuration0" maxlength="2">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2 mb-3">
+                                <label for="inputPrice0">票价</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="inputPrice0" placeholder="0.00">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text pl-1 pr-1">￥</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2 mb-3 mr-auto">
+                                <label for="inputStation1">终点站</label>
+                                <input class="form-control" type="text" id="inputStation1">
+                            </div>
+                            <button class="btn btn-outline-secondary"
+                                    style="height: min-content;position: relative;top: 32px">
+                                <span class="feather feather-minus"></span>
+                            </button>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-outline-secondary mr-2" id="buttonAddStation">
+                                <span class="feather feather-plus"></span>
+                            </button>
+                            <div class="float-right">
+                                <button class="btn btn-outline-primary ml-2" type="submit" id="buttonQueryTrain">查询
+                                </button>
+                                <button class="btn btn-outline-primary ml-2" type="submit" id="buttonAddTrain">添加
+                                </button>
+                                <button class="btn btn-outline-primary ml-2" type="submit" id="buttonDeleteTrain">删除
+                                </button>
+                                <button class="btn btn-outline-primary ml-2" type="submit" id="buttonReleaseTrain">发布
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -108,22 +160,23 @@
 {% block src %}
 
     <script>
+        let operation;
         $(function () {
             $("input[name='inputUsername']").on("input", function () {
                 if (this.validity.patternMismatch)
-                    this.setCustomValidity("用户名只能包含大小写字母与数字，长度在8-64之间。");
+                    this.setCustomValidity("用户名只能包含数字、字母、下划线，以字母开头，长度小于20。");
                 else
                     this.setCustomValidity("");
             });
             $("input[name='inputPassword']").on("input", function () {
                 if (this.validity.patternMismatch)
-                    this.setCustomValidity("密码必须包含大小写字母、数字、特殊符号，长度在8-64之间。");
+                    this.setCustomValidity("密码只能包含数字、字母、下划线，长度在6-30之间。");
                 else
                     this.setCustomValidity("");
             });
             $("input[name='inputName']").on("input", function () {
                 if (this.validity.patternMismatch)
-                    this.setCustomValidity("名字不能包含空格，长度在2-64之间。");
+                    this.setCustomValidity("姓名只能为汉字，长度在2-5之间。");
                 else
                     this.setCustomValidity("");
             });
@@ -137,13 +190,82 @@
                 $(`#${e.target.href.split("#")[1]} input`)[0].focus();
             });
             $("#buttonQueryProfile").click(function () {
-                $("#formUser input").not("#inputUsername").prop("required", false);
+                let iptUseless = $("#formUser input").not("#inputUsername");
+                iptUseless.prop("required", false);
+                iptUseless.each(function () {
+                    $(this).val("");
+                });
+                operation = 0;
             });
             $("#buttonAddUser").click(function () {
                 $("#formUser input").not("#inputUsername").prop("required", true);
+                operation = 1;
             });
             $("#buttonModifyProfile").click(function () {
                 $("#formUser input").not("#inputUsername").prop("required", false);
+                operation = 2;
+            });
+            $("#formUser").submit(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                let iptUsername = $("#inputUsername"),
+                    iptPassword = $("#inputPassword"),
+                    iptName = $("#inputName"),
+                    iptEmail = $("#inputEmail"),
+                    iptPrivilege = $("#inputPrivilege");
+                let dat = {
+                    "op": operation,
+                    "username": iptUsername.val(),
+                    "password": iptPassword.val(),
+                    "name": iptName.val(),
+                    "email": iptEmail.val(),
+                    "privilege": iptPrivilege.val()
+                };
+                if (operation !== 0 && operation !== 1 && operation !== 2) {
+                    showInfo("操作号错误。");
+                    return;
+                }
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "/manage",
+                    dataType: "json",
+                    data: JSON.stringify(dat),
+                    success: function (ret) {
+                        switch (dat["op"]) {
+                            case 0:
+                                if (ret["e"]) {
+                                    showInfo("查询用户信息失败。");
+                                    return;
+                                } else {
+                                    showInfo("查询用户信息成功。");
+                                    let info = ret["info"].split(" ");
+                                    iptUsername.val(info[0]);
+                                    iptName.val(info[1]);
+                                    iptEmail.val(info[2]);
+                                    iptPrivilege.val(info[3]);
+                                    break;
+                                }
+                            case 1:
+                                showInfo(`添加用户信息${ret["e"] ? "失败" : "成功"}。`);
+                                break;
+                            case 2:
+                                if (ret["e"]) {
+                                    showInfo("修改用户信息失败。");
+                                    return;
+                                } else {
+                                    showInfo("修改用户信息成功。");
+                                    let info = ret["info"].split(" ");
+                                    iptUsername.val(info[0]);
+                                    iptName.val(info[1]);
+                                    iptEmail.val(info[2]);
+                                    iptPrivilege.val(info[3]);
+                                    break;
+                                }
+                        }
+                    }
+                });
+                return false;
             });
         });
     </script>

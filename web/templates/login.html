@@ -72,29 +72,22 @@
 
 <body class="tab-content text-center">
 <ul class="nav nav-tabs" hidden>
-    <li class="active"><a id="tabRegister" href="#divRegister" data-toggle="tab"></a></li>
+    <li><a id="tabRegister" href="#divRegister" data-toggle="tab"></a></li>
     <li><a id="tabLogin" href="#divLogin" data-toggle="tab"></a></li>
 </ul>
 <div class="tab-pane fade show active" id="divLogin">
     <form class="form-login" id="formLogin">
         <img class="mb-4" src="{{ url_for('static',filename='/image/icon-512x512.png') }}" alt="" width="72"
              height="72">
-        <input type="text" name="inputUsername" class="form-control" placeholder="用户名" pattern="^\w{8,64}$" required
-               autofocus>
-        <input type="password" name="inputPassword" class="form-control" placeholder="密码"
-               pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-!$%^&*()_+|~=`{}[:;<>?,.@#\]]).{8,64}$" required>
-        <label>
-            <a onclick="$('#tabRegister').trigger('click');">
-                没有账号？现在注册
-            </a>
-        </label>
+        <input type="text" name="inputUsername" class="form-control" placeholder="用户名" pattern="^[a-zA-Z]\w{0,19}$"
+               required autofocus>
+        <input type="password" name="inputPassword" class="form-control" placeholder="密码" pattern="^\w{6,30}$" required>
+        <label><a onclick="$('#tabRegister').trigger('click');"> 没有账号？现在注册 </a></label>
         <button class="btn btn-lg btn-primary btn-block" type="submit" id="buttonLogin">登录</button>
         <div class="toast hide mt-3" id="toastLoginFailed" data-autohide="false">
             <div class="toast-header">
                 <strong class="mr-auto">登录失败：用户名或密码错误。</strong>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
-                    <span>&times;</span>
-                </button>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast"><span>&times;</span></button>
             </div>
         </div>
     </form>
@@ -105,24 +98,18 @@
     <form class="form-login" id="formRegister">
         <img class="mb-4" src="{{ url_for('static',filename='/image/icon-512x512.png') }}" alt="" width="72"
              height="72">
-        <input type="text" name="inputUsername" class="form-control" placeholder="用户名" pattern="^\w{8,64}$" required
-               autofocus>
-        <input type="password" name="inputPassword" class="form-control" placeholder="密码"
-               pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-!$%^&*()_+|~=`{}[:;<>?,.@#\]]).{8,64}$" required>
-        <input type="text" name="inputName" class="form-control" placeholder="性名" pattern="^\S{2,64}$" required>
+        <input type="text" name="inputUsername" class="form-control" placeholder="用户名" pattern="^[a-zA-Z]\w{0,19}$"
+               required autofocus>
+        <input type="password" name="inputPassword" class="form-control" placeholder="密码" pattern="^\w{6,30}$" required>
+        <input type="text" name="inputName" class="form-control" placeholder="姓名" pattern="^[\u4e00-\u9fa5]{2,5}$"
+               required>
         <input type="email" name="inputEmail" class="form-control" placeholder="电子邮箱" required>
-        <label>
-            <a onclick="$('#tabLogin').trigger('click');">
-                已有账号？前去登录
-            </a>
-        </label>
+        <label><a onclick="$('#tabLogin').trigger('click');">已有账号？前去登录</a></label>
         <button class="btn btn-lg btn-primary btn-block" type="submit">注册</button>
         <div class="toast hide mt-3" id="toastRegisterFailed" data-autohide="false">
             <div class="toast-header">
                 <strong class="mr-auto">注册失败：用户名已被使用。</strong>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
-                    <span>&times;</span>
-                </button>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast"><span>&times;</span></button>
             </div>
         </div>
     </form>
@@ -135,19 +122,19 @@
     $(function () {
         $("input[name='inputUsername']").on("input", function () {
             if (this.validity.patternMismatch)
-                this.setCustomValidity("用户名只能包含大小写字母与数字，长度在8-64之间。");
+                this.setCustomValidity("用户名只能包含数字、字母、下划线，以字母开头，长度小于20。");
             else
                 this.setCustomValidity("");
         });
         $("input[name='inputPassword']").on("input", function () {
             if (this.validity.patternMismatch)
-                this.setCustomValidity("密码必须包含大小写字母、数字、特殊符号，长度在8-64之间。");
+                this.setCustomValidity("密码只能包含数字、字母下划线，长度在6-30之间。");
             else
                 this.setCustomValidity("");
         });
         $("input[name='inputName']").on("input", function () {
             if (this.validity.patternMismatch)
-                this.setCustomValidity("名字不能包含空格，长度在2-64之间。");
+                this.setCustomValidity("姓名只能为汉字，长度在2-5之间。");
             else
                 this.setCustomValidity("");
         });
@@ -165,7 +152,7 @@
             e.stopPropagation();
             let form = $("#formLogin");
             let dat = {
-                "type": 0,
+                "op": 0,
                 "username": form.children("input[name='inputUsername']").val(),
                 "password": form.children("input[name='inputPassword']").val()
             };
@@ -189,7 +176,7 @@
             e.stopPropagation();
             let form = $("#formRegister");
             let dat = {
-                "type": 1,
+                "op": 1,
                 "username": form.children("input[name='inputUsername']").val(),
                 "password": form.children("input[name='inputPassword']").val(),
                 "name": form.children("input[name='inputName']").val(),
@@ -206,7 +193,7 @@
                         $("#toastRegisterFailed").toast("show");
                     else {
                         let dat = {
-                            "type": 0,
+                            "op": 0,
                             "username": form.children("input[name='inputUsername']").val(),
                             "password": form.children("input[name='inputPassword']").val()
                         };
