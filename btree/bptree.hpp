@@ -27,8 +27,8 @@ namespace sjtu {
 
         class basic_info{
         public:
-            char name[23];
-            char name2[23];
+            char name[25];
+            char name2[25];
 
             off_t root;
             off_t head;
