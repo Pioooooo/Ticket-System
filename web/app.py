@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, session, redirect, url_for
 from executable import Executable
 import requests
 
-app = Flask("webq")
+app = Flask("web")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.jinja_env.auto_reload = True
 
@@ -58,7 +58,7 @@ def login():
                 return {'e': -1}
             else:
                 r = requests.post('http://127.0.0.1:8000/check.php', {'username': request.json['username']}).json()
-                if (r['e'] == 0):
+                if r['e'] == 0:
                     session['username'] = request.json['username']
                     return {'e': 0}
                 else:
@@ -78,8 +78,9 @@ def login():
             r = requests.post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone']})
             return r.text
         elif request.json['op'] == 4:
-            r = requests.post('http://127.0.0.1:8000/login.php', {'phone': request.json['phone'], 'code': request.json['code']}).json()
-            if (r['e'] == 0):
+            r = requests.post('http://127.0.0.1:8000/login.php',
+                              {'phone': request.json['phone'], 'code': request.json['code']}).json()
+            if r['e'] == 0:
                 session['username'] = r['username']
                 return {'e': 0}
             else:
@@ -87,11 +88,12 @@ def login():
         else:
             return {'e': -100, 'msg': 'Unrecognized request.'}
 
+
 @app.route('/phoneverify', methods=['GET', 'POST'])
 def phoneverify():
     if request.method == 'GET':
         if session.get('username2') is None:
-            return redirect(url_for('phoneverify', f='index'))
+            return redirect(url_for('index', f='index'))
         else:
             return render_template('phoneverify.html', ses=session)
     else:
@@ -99,8 +101,10 @@ def phoneverify():
             r = requests.post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone']})
             return r.text
         elif request.json['op'] == 1:
-            r = requests.post('http://127.0.0.1:8000/phoneverify.php', {'phone': request.json['phone'], 'code': request.json['code'], 'username': session['username2']}).json()
-            if (r['e'] == 0):
+            r = requests.post('http://127.0.0.1:8000/phoneverify.php',
+                              {'phone': request.json['phone'], 'code': request.json['code'],
+                               'username': session['username2']}).json()
+            if r['e'] == 0:
                 session['username'] = session['username2']
                 session.pop('username2')
                 return {'e': 0}
@@ -108,6 +112,7 @@ def phoneverify():
                 return {'e': -1}
         else:
             return {'e': -100, 'msg': 'Unrecognized request.'}
+
 
 @app.route('/manage', methods=['GET', 'POST'])
 def manage():

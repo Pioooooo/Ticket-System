@@ -5,14 +5,13 @@
 {% block content %}
     <h1 class="col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" id="content">Utilities for layout</h1>
     <button class="btn btn-outline-primary" type="submit">test</button>
-    <i data-feather="circle"></i><span class="feather feather-git-branch"></span>
+    <span class="feather feather-git-branch"></span>
 {% endblock %}
 {% block src %}
     <script>
         $(function () {
             $(".btn").click(function () {
                 showInfo("test");
-                feather.replace();
             })
         });
     </script>

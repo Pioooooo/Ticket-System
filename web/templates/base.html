@@ -81,9 +81,7 @@
             </div>
         </div>
     </div>
-    <div style="min-height: 200px">
-        <div class="col-2" style="position: absolute; top: 70px; right: 0;" id="divToasts"></div>
-    </div>
+    <div class="col-2" style="position: absolute; top: 70px; right: 0;" id="divToasts"></div>
 </main>
 
 <footer class="footer">
@@ -125,6 +123,11 @@
                 } else {
                     this.value = "";
                 }
+            });
+        };
+        $.fn.inputSync = function () {
+            return $(`input[name="${$(this).attr("name")}"]`).on("input", function () {
+                $(`input[name="${$(this).attr("name")}"]`).not(this).val($(this).val());
             });
         };
         $("#buttonLogout").click(function () {

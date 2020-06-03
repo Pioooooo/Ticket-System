@@ -13,27 +13,27 @@
             </div>
             <div class="tab-content col-8">
                 <div class="tab-pane fade" id="divUser">
-                    <form>
+                    <form id="formUser">
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
-                                <lable for="inputUsername">用户名</lable>
+                                <lable>用户名</lable>
                                 <input class="form-control" type="text" id="inputUsername" pattern="^[a-zA-Z]\w{0,19}$"
                                        autofocus required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable for="inputPassword">密码</lable>
+                                <lable>密码</lable>
                                 <input class="form-control" type="password" id="inputPassword" pattern="^\w{6,30}$">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable for="inputName">姓名</lable>
+                                <lable>姓名</lable>
                                 <input class="form-control" type="text" id="inputName" pattern="^[\u4e00-\u9fa5]{2,5}$">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable for="inputEmail">邮箱</lable>
+                                <lable>邮箱</lable>
                                 <input class="form-control" type="email" id="inputEmail">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable for="inputPrivilege">权限</lable>
+                                <lable>权限</lable>
                                 <input class="form-control" type="text" id="inputPrivilege" pattern="^[1-9]\d*$">
                             </div>
                         </div>
@@ -50,88 +50,74 @@
                     <form id="formTrain">
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
-                                <lable for="inputTrainId">车次</lable>
-                                <input class="form-control" type="text" id="inputTrainId">
+                                <lable>车次</lable>
+                                <input class="form-control" type="text" id="inputTrainId" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable for="inputTrainType">类别</lable>
+                                <lable>类别</lable>
                                 <input class="form-control" type="text" id="inputTrainType">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <lable for="inputSeatNumber">座位数</lable>
+                                <lable>座位数</lable>
                                 <input class="form-control" type="text" id="inputSeatNumber">
                             </div>
-                            <!--
-                            <div class="col-md-4 mb-3">
-                                <lable>Stations</lable>
-                                <input class="form-control" type="text" id="inputStations">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <lable>Prices</lable>
-                                <input class="form-control" type="text" id="inputPrices">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <lable>Start Time</lable>
-                                <input class="form-control" type="time" id="inputStartTime">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <lable>Travel Times</lable>
-                                <input class="form-control" type="text" id="inputTravelTimes">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <lable>Stopover Times</lable>
-                                <input class="form-control" type="text" id="inputStopoverTimes">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <lable>Sale Dates</lable>
-                                <input class="form-control" type="text" id="inputSaleDates">
-                            </div>-->
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-2 mb-3">
-                                <label for="inputStation0">始发站</label>
-                                <input class="form-control" type="text" id="inputStation0">
-                            </div>
-                            <div class="form-group col-md-2 mb-3">
-                                <label for="hourDepart0">出发时间</label>
-                                <div class="input-group">
-                                    <input class="form-control" type="text" id="hourDepart0" maxlength="2">
-                                    <div class="input-group-prepend input-group-append">
-                                        <span class="input-group-text pl-1 pr-1">:</span>
+                        <div class="row">
+                            <div class="col-md-11" id="divStations">
+                                <div class="form-row">
+                                    <div class="form-group col-md-3 mb-3">
+                                        <label>始发站</label>
+                                        <input class="form-control" type="text" name="inputStation0">
                                     </div>
-                                    <input class="form-control" type="text" id="minuteDepart0" maxlength="2">
+                                    <div class="form-group col-md-2 mb-3">
+                                        <label>出发时间</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="hourDepart0" maxlength="3"
+                                                   placeholder="00">
+                                            <div class="input-group-prepend input-group-append">
+                                                <span class="input-group-text pl-1 pr-1">:</span>
+                                            </div>
+                                            <input class="form-control" type="text" id="minuteDepart0" maxlength="2"
+                                                   placeholder="00">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-2 mb-3">
+                                        <label>时长</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="hourDuration0" maxlength="3"
+                                                   placeholder="00">
+                                            <div class="input-group-prepend input-group-append">
+                                                <span class="input-group-text pl-1 pr-1">:</span>
+                                            </div>
+                                            <input class="form-control" type="text" id="minuteDuration0" maxlength="2"
+                                                   placeholder="00">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-2 mb-3">
+                                        <label>票价</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="inputPrice0" placeholder="0.00">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text pl-1 pr-1">￥</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3 mb-3 mr-auto">
+                                        <label>终点站</label>
+                                        <input class="form-control" type="text" name="inputStation1">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group col-md-2 mb-3">
-                                <label for="hourDuration0">时长</label>
-                                <div class="input-group">
-                                    <input class="form-control" type="text" id="hourDuration0" maxlength="2">
-                                    <div class="input-group-prepend input-group-append">
-                                        <span class="input-group-text pl-1 pr-1">:</span>
-                                    </div>
-                                    <input class="form-control" type="text" id="minuteDuration0" maxlength="2">
-                                </div>
+                            <div class="col-md-1 pl-0">
+                                <button class="btn btn-outline-secondary mb-3 mr-3"
+                                        style="height: min-content;position: absolute;bottom:0;right: 0;display: none"
+                                        type="button" id="buttonRemoveStation">
+                                    <span class="feather feather-minus"></span>
+                                </button>
                             </div>
-                            <div class="form-group col-md-2 mb-3">
-                                <label for="inputPrice0">票价</label>
-                                <div class="input-group">
-                                    <input class="form-control" type="text" id="inputPrice0" placeholder="0.00">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text pl-1 pr-1">￥</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-2 mb-3 mr-auto">
-                                <label for="inputStation1">终点站</label>
-                                <input class="form-control" type="text" id="inputStation1">
-                            </div>
-                            <button class="btn btn-outline-secondary"
-                                    style="height: min-content;position: relative;top: 32px">
-                                <span class="feather feather-minus"></span>
-                            </button>
                         </div>
                         <div class="mb-3">
-                            <button class="btn btn-outline-secondary mr-2" id="buttonAddStation">
+                            <button class="btn btn-outline-secondary mr-2" type="button" id="buttonAddStation">
                                 <span class="feather feather-plus"></span>
                             </button>
                             <div class="float-right">
@@ -149,10 +135,6 @@
                 </div>
             </div>
         </div>
-        <div>
-            <label id="textTrainID"></label>
-            <label id="textTrainType"></label>
-        </div>
     </div>
 
 {% endblock %}
@@ -161,26 +143,53 @@
 
     <script>
         let operation;
+
+        function addRow() {
+            let divStations = $("#divStations"), len = divStations.children().length;
+            divStations.append($(
+                `<div class="form-row collapse"><div class="form-group col-md-3 mb-3"><label>车站${len}</label>` +
+                `<input class="form-control" type="text" name="inputStation${len}" value="${divStations.find(`[name=inputStation${len}]`).val()}"></div>` +
+                `<div class="form-group col-md-2 mb-3"><label>出发时间</label><div class="input-group">` +
+                `<input class="form-control" type="text" id="hourDepart${len}" maxlength="3" placeholder="00">` +
+                `<div class="input-group-prepend input-group-append">` +
+                `<span class="input-group-text pl-1 pr-1">:</span></div>` +
+                `<input class="form-control" type="text" id="minuteDepart${len}" maxlength="2" placeholder="00">` +
+                `</div></div><div class="form-group col-md-2 mb-3"><label>时长</label><div class="input-group">` +
+                `<input class="form-control" type="text" id="hourDuration${len}" maxlength="3" placeholder="00">` +
+                `<div class="input-group-prepend input-group-append">` +
+                `<span class="input-group-text pl-1 pr-1">:</span></div>` +
+                `<input class="form-control" type="text" id="minuteDuration${len}" maxlength="2" placeholder="00">` +
+                `</div></div><div class="form-group col-md-2 mb-3"><label>票价</label><div class="input-group">` +
+                `<input class="form-control" type="text" id="inputPrice${len}" placeholder="0.00">` +
+                `<div class="input-group-append"><span class="input-group-text pl-1 pr-1">￥</span></div></div>` +
+                `</div><div class="form-group col-md-3 mb-3 mr-auto"><label>终点站</label>` +
+                `<input class="form-control" type="text" name="inputStation${len + 1}"></div></div>`));
+            divStations.children().last().find("input[name^=inputStation]").inputSync();
+            divStations.children().last().collapse("show");
+            $("#buttonRemoveStation").show();
+        }
+
+
         $(function () {
-            $("input[name='inputUsername']").on("input", function () {
+            $("#inputUsername").on("input", function () {
                 if (this.validity.patternMismatch)
                     this.setCustomValidity("用户名只能包含数字、字母、下划线，以字母开头，长度小于20。");
                 else
                     this.setCustomValidity("");
             });
-            $("input[name='inputPassword']").on("input", function () {
+            $("#inputPassword").on("input", function () {
                 if (this.validity.patternMismatch)
                     this.setCustomValidity("密码只能包含数字、字母、下划线，长度在6-30之间。");
                 else
                     this.setCustomValidity("");
             });
-            $("input[name='inputName']").on("input", function () {
+            $("#inputName").on("input", function () {
                 if (this.validity.patternMismatch)
                     this.setCustomValidity("姓名只能为汉字，长度在2-5之间。");
                 else
                     this.setCustomValidity("");
             });
-            $("input[name='inputEmail']").on("input", function () {
+            $("#inputEmail").on("input", function () {
                 if (this.validity.typeMismatch)
                     this.setCustomValidity("请输入正确的邮件格式。");
                 else
@@ -192,9 +201,6 @@
             $("#buttonQueryProfile").click(function () {
                 let iptUseless = $("#formUser input").not("#inputUsername");
                 iptUseless.prop("required", false);
-                iptUseless.each(function () {
-                    $(this).val("");
-                });
                 operation = 0;
             });
             $("#buttonAddUser").click(function () {
@@ -266,6 +272,32 @@
                     }
                 });
                 return false;
+            });
+
+            $("input[id^='hour'],input[id^='minute']").inputFilter(function (str) {
+                return str.length === 0 || /^[1-9]\d*$/.test(str);
+            });
+            $("input[name^='inputStation']").inputSync();
+            $("#buttonAddStation").click(function () {
+                let rows = $("#divStations").children();
+                rows.last().find("label:last").html(`车站${rows.length}`);
+                addRow();
+                $("#buttonRemoveStation").show();
+            });
+            $("#buttonRemoveStation").click(function () {
+                let divStations = $("#divStations");
+                divStations.children().last().collapse("hide");
+                divStations.children().last().on("hidden.bs.collapse", function () {
+                    if (divStations.children().length === 1)
+                        return;
+                    $(this).remove();
+                    $(this).find("label:last").html(`终点站`);
+                    if (divStations.children().length === 1)
+                        $("#buttonRemoveStation").hide();
+                });
+            });
+            $("#buttonQueryTrain").click(function () {
+                $("").prop()
             });
         });
     </script>
