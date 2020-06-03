@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="stneng">
+    <title>登录 · Ticket System</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='/image/favicon.ico') }}">
+    <link href="{{ url_for('static', filename='/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+        }
+
+        body > div {
+            margin: auto;
+        }
+
+        .form-login {
+            width: 100%;
+            height: 600px;
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+        }
+
+        .form-login .checkbox {
+            font-weight: 400;
+        }
+
+        .form-login .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form-login .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-login input {
+            margin-bottom: -1px;
+            border-radius: 0;
+        }
+
+        .form-login input:first-of-type {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .form-login input:last-of-type {
+            margin-bottom: 10px;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="tab-content text-center">
+<ul class="nav nav-tabs" hidden>
+    <li><a id="tabSMSVerify" href="#divSMSVerify" data-toggle="tab"></a></li>
+</ul>
+
+<div class="tab-pane fade show active" id="divSMSVerify">
+    <form class="form-login" id="formSMSVerify">
+        <img class="mb-4" src="{{ url_for('static',filename='/image/icon-512x512.png') }}" alt="" width="72"
+             height="72">
+        <input type="text" name="inputPhone" class="form-control" placeholder="手机号" pattern="^1(?:3\d{3}|5[^4\D]\d{2}|8\d{3}|7(?:[01356789]\d{2}|4(?:0\d|1[0-2]|9\d))|9[01356789]\d{2}|6[2567]\d{2})\d{6}$" required autofocus>
+        <div class="input-group mb-3">
+            <input type="text" name="inputCode" class="form-control" placeholder="验证码" pattern="^\d{6}$" required>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="buttonSMSCode">发送验证码</button>
+            </div>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" id="buttonSMSVerify">确认</button>
+        <div class="toast hide mt-3" id="toastSMSVerifyFailed" data-autohide="false">
+            <div class="toast-header">
+                <strong class="mr-auto">验证码错误。</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast"><span>&times;</span></button>
+            </div>
+        </div>
+    </form>
+    <p class="mt-5 mb-3 text-muted">Ticket System &copy; 2020 Powered by 心に焼き付けて, Piooooo, stneng.</p>
+</div>
+</body>
+<script src="{{ url_for('static', filename='/js/jquery-3.5.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script>
+<script>
+    $(function () {
+        $("input[name='inputPhone']").on("input", function () {
+            if (this.validity.patternMismatch)
+                this.setCustomValidity("请输入正确的手机号。");
+            else
+                this.setCustomValidity("");
+        });
+        $("input[name='inputCode']").on("input", function () {
+            if (this.validity.patternMismatch)
+                this.setCustomValidity("验证码为6位数字。");
+            else
+                this.setCustomValidity("");
+        });
+        $("a[data-toggle='tab']").on("shown.bs.tab", function (e) {
+            $(`#${e.target.href.split("#")[1]} input`)[0].focus();
+        });
+        $("#buttonSMSCode").click(function (e) {
+            if ($("input[name='inputPhone']")[0].validity.patternMismatch){
+                $("input[name='inputPhone']")[0].setCustomValidity("请输入正确的手机号。");
+                $("input[name='inputPhone']")[0].focus()
+		        return false;
+            }else{
+                $("input[name='inputPhone']")[0].setCustomValidity("");
+            }
+            let form = $("#formSMSVerify");
+            let dat = {
+                "op": 0,
+                "phone": form.children("input[name='inputPhone']").val()
+            };
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/phoneverify",
+                dataType: "json",
+                data: JSON.stringify(dat),
+                success: function (ret) {
+                    if (ret["e"]){
+                        $("#buttonSMSCode").html("发送失败");
+                        $("#buttonSMSCode").attr("disabled",true);
+                    }else{
+                        $("#buttonSMSCode").html("已发送");
+                        $("#buttonSMSCode").attr("disabled",true);
+                    }
+                }
+            });
+            return false;
+        });
+        $("#formSMSVerify").submit(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            let form = $("#formSMSVerify");
+            let dat = {
+                "op": 1,
+                "phone": form.children("input[name='inputPhone']").val(),
+                "code": form.children("div").children("input[name='inputCode']").val()
+            };
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/phoneverify",
+                dataType: "json",
+                data: JSON.stringify(dat),
+                success: function (ret) {
+                    if (ret["e"])
+                        $("#toastSMSVerifyFailed").toast("show");
+                    else
+                        window.location.replace("/")
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</html>
