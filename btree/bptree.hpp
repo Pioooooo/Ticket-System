@@ -153,11 +153,18 @@ namespace sjtu {
                 }
             }
             for (size_t i = 1; i <= cur_node->siz; ++i){
-                if(!cmp(cur_node->info[i].first, key) && !cmp(key, cur_node->info[i].first)){
-                    new_pos.first = cur_node;
-                    new_pos.second = i;
-                    return new_pos;
-                }
+//                if(!cmp(cur_node->info[i].first, key) && !cmp(key, cur_node->info[i].first)){
+//                    new_pos.first = cur_node;
+//                    new_pos.second = i;
+//                    return new_pos;
+//                }
+                if(cmp(cur_node->info[i].first, key))
+                    continue;
+                if(cmp(key, cur_node->info[i].first))
+                    break;
+                new_pos.first = cur_node;
+                new_pos.second = i;
+                return new_pos;
             }
             new_pos.first = nullptr;
             new_pos.second = 0;
