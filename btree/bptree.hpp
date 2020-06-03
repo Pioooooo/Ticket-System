@@ -366,9 +366,16 @@ namespace sjtu {
                     *bro_ = nullptr;
                     position parent;
                     parent.first = par;
-                    parent.second = 0; ////??????????? why 0???
-                    erase_inner(parent);
-                    return;
+                    parent.second = 1;
+                    if (par != root && root->siz != 1) {
+                        erase_inner(parent);
+                        return;
+                    } else {
+                        free(root);
+                        root = pos;
+                        basic->root = pos->pos;
+                        pool[pos->pos % pool_siz] = nullptr;
+                    }
                 }
             } else{
                 off_t bro_pos = par->info[cur_pos - 1].second;
@@ -382,8 +389,8 @@ namespace sjtu {
                     modify_inner(pos->par, pos->info[1].first);
                     return;
                 } else {
-                    Node **tmp = _read(bro_node->pre);
-                    (*tmp)->nex = pos->pos;
+                    Node **tmp = _read(pos->nex);
+                    (*tmp)->pre = bro_pos;
                     pos->pre = (*tmp)->pos;
                     _write(tmp);
                     size_t ini = bro_node->siz;
@@ -397,8 +404,15 @@ namespace sjtu {
                     position parent;
                     parent.first = par;
                     parent.second = cur_pos;
-                    erase_inner(parent);
-                    return;
+                    if (par != root && root->siz != 1) {
+                        erase_inner(parent);
+                        return;
+                    } else {
+                        free(root);
+                        root = bro_node;
+                        basic->root = bro_pos;
+                        pool[bro_pos % pool_siz] = nullptr;
+                    }
                 }
             }
         }
@@ -420,7 +434,7 @@ namespace sjtu {
                     }
                     position parent;
                     parent.first = par;
-                    parent.second = 1;
+                    parent.second = 0;
                     modify_inner(parent, bro_node->info[1].first);
                     return;
                 } else {
@@ -438,13 +452,21 @@ namespace sjtu {
 //                    delete bro_node;
                     position parent;
                     parent.first = par;
-                    parent.second = 0;
-                    erase_inner(parent);
-                    return;
+                    parent.second = 1;
+                    if (par != root && root->siz != 1) {
+                        erase_inner(parent);
+                        return;
+                    } else {
+                        free(root);
+                        root = pos;
+                        basic->root = pos->pos;
+                        pool[pos->pos % pool_siz] = nullptr;
+                    }
                 }
             } else{
                 off_t bro_pos = par->info[cur_pos - 1].second;
-                Node *bro_node = *_read(bro_pos);
+                Node **bro_ = _read(bro_pos);
+                Node *bro_node = *bro_;
                 if(bro_node->siz > MIN_SIZ){
                     for(size_t i = ++pos->siz; i > 1; --i){
                         pos->info[i] = pos->info[i - 1];
@@ -468,8 +490,15 @@ namespace sjtu {
                     position parent;
                     parent.first = par;
                     parent.second = cur_pos;
-                    erase_inner(parent);
-                    return;
+                    if (par != root && root->siz != 1) {
+                        erase_inner(parent);
+                        return;
+                    } else{
+                        free(root);
+                        root = bro_node;
+                        basic->root = bro_pos;
+                        *bro_ = nullptr;
+                    }
                 }
             }
         }
@@ -488,20 +517,21 @@ namespace sjtu {
                     cur_node->info[i] = cur_node->info[i + 1];
                 }
             }
-            if(cur_node == root){
-                if(sz == 0){
-                    Node *tmp = (Node *)malloc(Node_siz);
-                    memset(tmp, 0, Node_siz);
-                    fseek(file, root->info[0].first, SEEK_SET);
-                    fread(tmp, Node_siz, 1, file);
-                    basic->root = tmp->pos;
-                    basic->free_pos[++basic->free_num] = root->pos;
-                    free(root);
+//            if(cur_node == root){
+//                if(sz == 0){
+//                    write_all();
+//                    Node *tmp = (Node *)malloc(Node_siz);
+//                    memset(tmp, 0, Node_siz);
+//                    fseek(file, root->info[0].first, SEEK_SET);
+//                    fread(tmp, Node_siz, 1, file);
+//                    basic->root = tmp->pos;
+//                    basic->free_pos[++basic->free_num] = root->pos;
+//                    free(root);
 //                    delete root;
-                    root = tmp;
-                }
-                return;
-            }
+//                    root = tmp;
+//                }
+//                return;
+//            }
             if(sz < MIN_SIZ){
                 merge_inner(cur_node);
             }
@@ -510,6 +540,8 @@ namespace sjtu {
     public:
 
         explicit BTree(const char *file_name1 = "data1", const char *file_name2 = "data2") {
+//            fopen_s(&file, file_name1, "rb+");
+//            fopen_s(&val_file, file_name2, "rb+");
             file = fopen(file_name1, "rb+");
             val_file = fopen(file_name2, "rb+");
 
@@ -523,8 +555,12 @@ namespace sjtu {
                 fread(root, Node_siz, 1, file);
             } else {
                 memset(basic, 0, basic_siz);
+//                fopen_s(&file, file_name1, "wb+");
+//                fopen_s(&val_file, file_name2, "wb+");
                 file = fopen(file_name1, "wb+");
                 val_file = fopen(file_name2, "wb+");
+//                strcpy_s(basic->name, file_name1);
+//                strcpy_s(basic->name2, file_name2);
                 strcpy(basic->name, file_name1);
                 strcpy(basic->name2, file_name2);
                 fseek(file, 0, SEEK_SET);
@@ -568,9 +604,12 @@ namespace sjtu {
         }
 
         ~BTree() {
-            for (size_t i = 0; i < pool_siz; ++i){
-                if (pool[i] != nullptr)
-                    _write(&(pool[i]));
+//            for (size_t i = 0; i < pool_siz; ++i){
+//                if (pool[i] != nullptr)
+//                    _write(&(pool[i]));
+//            }
+            while (num > 0){
+                _write(&(pool[occupied[num--]]));
             }
             if (basic != nullptr) {
                 fseek(file, 0, SEEK_SET);
