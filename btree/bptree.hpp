@@ -22,8 +22,8 @@ namespace sjtu {
         FILE *file;
         FILE *val_file;
         Compare cmp;
-        static const size_t MAX_SIZ = 5;
-        static const size_t MIN_SIZ = 2;
+        static const size_t MAX_SIZ = 100;
+        static const size_t MIN_SIZ = 50;
 
         class basic_info{
         public:
@@ -37,10 +37,10 @@ namespace sjtu {
 
             //free from merge
             size_t free_num;
-            off_t free_pos[100];
+            off_t free_pos[200];
 
             size_t free_num2;
-            off_t free_pos2[100];
+            off_t free_pos2[200];
 
             basic_info() {
                 root = head = tail = siz = 0;
@@ -189,6 +189,11 @@ namespace sjtu {
                 }
             }
             size_t cur_siz = cur_node->siz;
+            if(cmp(key, cur_node->info[1].first)){
+                new_pos.first = cur_node;
+                new_pos.second = 0;
+                return new_pos;
+            }
             for (size_t i = 2; i <= cur_siz; ++i){
                 if(!cmp(cur_node->info[i - 1].first, key)){
                     new_pos.first = nullptr;
