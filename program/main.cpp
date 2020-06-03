@@ -173,8 +173,8 @@ inline void add_user(){
         user cur_user=user_table.at(hash(cur_username));
         if (cur_user.privilege>new_user.privilege && user_table.find(hash(new_user.username))==user_table.end()){
             user_table.insert(hash(new_user.username), new_user);
-            printf("0\n");
             user_order_table.insert(hash(new_user.username), order_list());
+            printf("0\n");
         }else{
             printf("-1\n");
         }
@@ -864,7 +864,6 @@ int main(int argc, const char * argv[]) {
             clean();
         }else if (cmd[0]=='e'){
             exit();
-            break;
         }
     }
     return 0;
