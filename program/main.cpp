@@ -566,6 +566,7 @@ inline void query_transfer(){
                                                 datetime tmp2=rcalctimestamp(timestamp);
                                                 int tb=calctimestamp(tmp2.month,tmp2.day);
                                                 if (starttimestamp2+tb-ts<timestamp) tb+=1440;
+                                                if (tb<ts) tb=ts;
                                                 if (ts<=tb && tb<=tt){
                                                     starttimestamp2+=tb-ts;
                                                     endtimestamp2+=tb-ts;
@@ -595,9 +596,11 @@ inline void query_transfer(){
                                         tmp>>=1;id++;
                                     }
                                 }
+                                ///
                             }
+                            timestamp+=train.stopoverTimes[i-1];
                         }
-                        timestamp+=train.travelTimes[i]+train.stopoverTimes[i];
+                        timestamp+=train.travelTimes[i];
                         price+=train.prices[i];seat=std::min(seat,seatNum.num[i]);
                     }
                 }
