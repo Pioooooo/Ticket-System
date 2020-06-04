@@ -38,9 +38,11 @@ struct station{
     unsigned int trainbit[233];
     station(){memset(trainbit,0,sizeof(trainbit));}
     inline void set(int p){
-        trainbit[p>>5]=trainbit[p>>5]|(1<<(p%32-1));
+        p--;
+        trainbit[p>>5]=trainbit[p>>5]|(1<<(p%32));
     }
     inline int get(int p){
+        p--;
         return (trainbit[p>>5]>>(p%32))&1;
     }
 };
@@ -596,7 +598,6 @@ inline void query_transfer(){
                                         tmp>>=1;id++;
                                     }
                                 }
-                                ///
                             }
                             timestamp+=train.stopoverTimes[i-1];
                         }
