@@ -429,6 +429,7 @@ inline void delete_train(){
     train train=train_table.at(hash(trainID));
     if (train.release==0){
         train_table.erase(hash(trainID));
+        printf("0\n");
     }else{
         printf("-1\n");
     }
