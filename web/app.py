@@ -75,7 +75,7 @@ def login():
             session.pop('username')
             return {'e': int(ret[0])}
         elif request.json['op'] == 3:
-            r = requests.post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone']})
+            r = requests.post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone'], 'op': 1})
             return r.text
         elif request.json['op'] == 4:
             r = requests.post('http://127.0.0.1:8000/login.php',
@@ -84,7 +84,7 @@ def login():
                 session['username'] = r['username']
                 return {'e': 0}
             else:
-                return {'e': -1}
+                return {'e': -1, 'msg': r['msg']}
         else:
             return {'e': -100, 'msg': 'Unrecognized request.'}
 
@@ -98,7 +98,7 @@ def phoneverify():
             return render_template('phoneverify.html', ses=session)
     else:
         if request.json['op'] == 0:
-            r = requests.post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone']})
+            r = requests.post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone'], 'op': 0})
             return r.text
         elif request.json['op'] == 1:
             r = requests.post('http://127.0.0.1:8000/phoneverify.php',
@@ -109,7 +109,7 @@ def phoneverify():
                 session.pop('username2')
                 return {'e': 0}
             else:
-                return {'e': -1}
+                return {'e': -1, 'msg': r['msg']}
         else:
             return {'e': -100, 'msg': 'Unrecognized request.'}
 
