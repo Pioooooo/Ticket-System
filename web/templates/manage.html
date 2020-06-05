@@ -62,6 +62,12 @@
                                 <input class="form-control" type="text" id="inputSeatNumber">
                             </div>
                         </div>
+                        <div class="form-row" id="divDates">
+                            <div class="col-md-2 mb-3">
+                                <label>日期</label>
+                                <input class="form-control" type="date" name="inputDate">
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-11" id="divStations">
                                 <div class="form-row">
@@ -72,31 +78,27 @@
                                     <div class="form-group col-md-2 mb-3">
                                         <label>出发时间</label>
                                         <div class="input-group">
-                                            <input class="form-control" type="text" id="hourDepart0" maxlength="3"
-                                                   placeholder="00">
+                                            <input class="form-control" type="text" id="hourDepart0" maxlength="2">
                                             <div class="input-group-prepend input-group-append">
                                                 <span class="input-group-text pl-1 pr-1">:</span>
                                             </div>
-                                            <input class="form-control" type="text" id="minuteDepart0" maxlength="2"
-                                                   placeholder="00">
+                                            <input class="form-control" type="text" id="minuteDepart0" maxlength="2">
                                         </div>
                                     </div>
                                     <div class="form-group col-md-2 mb-3">
-                                        <label>时长</label>
+                                        <label>到达时间</label>
                                         <div class="input-group">
-                                            <input class="form-control" type="text" id="hourDuration0" maxlength="3"
-                                                   placeholder="00">
+                                            <input class="form-control" type="text" id="hourArrive0" maxlength="2">
                                             <div class="input-group-prepend input-group-append">
                                                 <span class="input-group-text pl-1 pr-1">:</span>
                                             </div>
-                                            <input class="form-control" type="text" id="minuteDuration0" maxlength="2"
-                                                   placeholder="00">
+                                            <input class="form-control" type="text" id="minuteArrive0" maxlength="2">
                                         </div>
                                     </div>
                                     <div class="form-group col-md-2 mb-3">
                                         <label>票价</label>
                                         <div class="input-group">
-                                            <input class="form-control" type="text" id="inputPrice0" placeholder="0.00">
+                                            <input class="form-control" type="text" id="inputPrice0">
                                             <div class="input-group-append">
                                                 <span class="input-group-text pl-1 pr-1">￥</span>
                                             </div>
@@ -150,25 +152,27 @@
                 `<div class="form-row collapse"><div class="form-group col-md-3 mb-3"><label>车站${len}</label>` +
                 `<input class="form-control" type="text" name="inputStation${len}" value="${divStations.find(`[name=inputStation${len}]`).val()}"></div>` +
                 `<div class="form-group col-md-2 mb-3"><label>出发时间</label><div class="input-group">` +
-                `<input class="form-control" type="text" id="hourDepart${len}" maxlength="3" placeholder="00">` +
+                `<input class="form-control" type="text" id="hourDepart${len}" maxlength="2">` +
                 `<div class="input-group-prepend input-group-append">` +
                 `<span class="input-group-text pl-1 pr-1">:</span></div>` +
-                `<input class="form-control" type="text" id="minuteDepart${len}" maxlength="2" placeholder="00">` +
-                `</div></div><div class="form-group col-md-2 mb-3"><label>时长</label><div class="input-group">` +
-                `<input class="form-control" type="text" id="hourDuration${len}" maxlength="3" placeholder="00">` +
+                `<input class="form-control" type="text" id="minuteDepart${len}" maxlength="2">` +
+                `</div></div><div class="form-group col-md-2 mb-3"><label>到达时间</label><div class="input-group">` +
+                `<input class="form-control" type="text" id="hourArrive${len}" maxlength="2">` +
                 `<div class="input-group-prepend input-group-append">` +
                 `<span class="input-group-text pl-1 pr-1">:</span></div>` +
-                `<input class="form-control" type="text" id="minuteDuration${len}" maxlength="2" placeholder="00">` +
+                `<input class="form-control" type="text" id="minuteArrive${len}" maxlength="2">` +
                 `</div></div><div class="form-group col-md-2 mb-3"><label>票价</label><div class="input-group">` +
-                `<input class="form-control" type="text" id="inputPrice${len}" placeholder="0.00">` +
+                `<input class="form-control" type="text" id="inputPrice${len}">` +
                 `<div class="input-group-append"><span class="input-group-text pl-1 pr-1">￥</span></div></div>` +
                 `</div><div class="form-group col-md-3 mb-3 mr-auto"><label>终点站</label>` +
                 `<input class="form-control" type="text" name="inputStation${len + 1}"></div></div>`));
             divStations.children().last().find("input[name^=inputStation]").inputSync();
+            divStations.children().last().find("input[id^='hour'],input[id^='minute'],input[name^='inputPrice']").inputFilter(function (str) {
+                return str.length === 0 || /^[1-9]\d*$/.test(str);
+            });
             divStations.children().last().collapse("show");
             $("#buttonRemoveStation").show();
         }
-
 
         $(function () {
             $("#inputUsername").on("input", function () {
@@ -274,7 +278,7 @@
                 return false;
             });
 
-            $("input[id^='hour'],input[id^='minute']").inputFilter(function (str) {
+            $("input[id^='hour'],input[id^='minute'],input[name^='inputPrice'],#inputSeatNumber").inputFilter(function (str) {
                 return str.length === 0 || /^[1-9]\d*$/.test(str);
             });
             $("input[name^='inputStation']").inputSync();
@@ -297,8 +301,48 @@
                 });
             });
             $("#buttonQueryTrain").click(function () {
-                $("").prop()
+                operation = 3;
             });
+            $("#buttonAddTrain").click(function () {
+                $("#formTrain input").prop("required", true);
+                operation = 4;
+            });
+            $("#buttonDeleteTrain").click(function () {
+                $("#formTrain input").not($("#inputTrainId")).prop("required", false);
+                operation = 5;
+            });
+            $("#buttonReleaseTrain").click(function () {
+                $("#formTrain input").not($("#inputTrainId")).prop("required", false);
+                operation = 6;
+            });
+            $("#formTrain").submit(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                let rows = $("#divStations").children();
+                let dat = {
+                    "trainId": $("#inputTrainId").val(),
+                    "stationNumber": rows.length + 1,
+                    "trainType": $("#inputTrainType").val(),
+                    "seatNumber": $("#inputSeatNumber").val(),
+                    "stations": $.map($("input[name^='inputStation']"), function (e) {
+                        return $(e).val();
+                    }).join("|"),
+                    "prices": $.map($("input[id^='inputPrice']"), function (e) {
+                        return $(e).val();
+                    }).val().join("|"),
+                    "startTime": `${$("#hourDepart0").val()}:${$("#minuteDepart0").val()}`,
+                    "travelTimes": $.map(rows, function (e) {
+                        return (((parseInt(e.find("input[id^='hourArrive']").val()) - parseInt(e.find("input[id^='hourDepart']").val())) % 24 + 24) % 24) * 60
+                            + parseInt(e.find("input[id^='minuteArrive']").val()) - parseInt(e.find("input[id^='minuteDepart']").val()).toString();
+                    }).join("|"),
+                    "stopoverTimes": rows.length !== 1 ? Array(rows.length - 1).keys().map(function (i) {
+                        return (((parseInt(rows.find(`input[id="hourArrive${i + 1}"]`).val()) - parseInt(rows.find(`input[id="hourDepart${i}"]`).val())) % 24 + 24) % 24) * 60
+                            + parseInt(rows.find(`input[id="minuteArrive${i + 1}"]`).val()) - parseInt(rows.find(`input[id="minuteDepart${i}"]`).val()).toString();
+                    }).join("|") : "_",
+                    "saleDate":
+                };
+                console.log(dat);
+            })
         });
     </script>
 
