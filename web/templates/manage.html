@@ -12,7 +12,7 @@
                 <a class="list-group-item list-group-item-action" data-toggle="tab" href="#divTrain">列车操作</a>
             </div>
             <div class="tab-content col-8">
-                <div class="tab-pane fade" id="divUser">
+                <div class="tab-pane fade show active" id="divUser">
                     <form id="formUser">
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
@@ -46,16 +46,17 @@
                         </div>
                     </form>
                 </div>
-                <div class="tab-pane fade show active" id="divTrain">
+                <div class="tab-pane fade" id="divTrain">
                     <form id="formTrain">
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
                                 <lable>车次</lable>
-                                <input class="form-control" type="text" id="inputTrainId" required>
+                                <input class="form-control" type="text" id="inputTrainId" pattern="^[a-zA-Z]\w{0,19}$"
+                                       required>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <lable>类别</lable>
-                                <input class="form-control" type="text" id="inputTrainType">
+                                <input class="form-control" type="text" id="inputTrainType" pattern="^[A-Z]$">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <lable>座位数</lable>
@@ -63,19 +64,28 @@
                             </div>
                         </div>
                         <div class="form-row" id="divDates">
-                            <div class="col-md-2 mb-3">
-                                <label>日期</label>
-                                <input class="form-control" type="date" name="inputDate">
+                            <label class="w-100 ml-1">日期</label>
+                            <div class="mb-3 pl-1 pr-1">
+                                <input class="form-control" style="width: 172px" type="date" id="inputDate"
+                                       name="inputDate">
+                            </div>
+                            <div>
+                                <div class="btn-group">
+                                    <button class="btn btn-outline-secondary" type="button" id="buttonAddDate">
+                                        <span class="feather feather-plus"></span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-11" id="divStations">
                                 <div class="form-row">
-                                    <div class="form-group col-md-3 mb-3">
+                                    <div class="col-md-3 mb-3">
                                         <label>始发站</label>
-                                        <input class="form-control" type="text" name="inputStation0">
+                                        <input class="form-control" type="text" name="inputStation0"
+                                               pattern="^[\u4e00-\u9fa5]{1,10}$">
                                     </div>
-                                    <div class="form-group col-md-2 mb-3">
+                                    <div class="col-md-2 mb-3">
                                         <label>出发时间</label>
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="hourDepart0" maxlength="2">
@@ -85,7 +95,7 @@
                                             <input class="form-control" type="text" id="minuteDepart0" maxlength="2">
                                         </div>
                                     </div>
-                                    <div class="form-group col-md-2 mb-3">
+                                    <div class="col-md-2 mb-3">
                                         <label>到达时间</label>
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="hourArrive0" maxlength="2">
@@ -95,7 +105,7 @@
                                             <input class="form-control" type="text" id="minuteArrive0" maxlength="2">
                                         </div>
                                     </div>
-                                    <div class="form-group col-md-2 mb-3">
+                                    <div class="col-md-2 mb-3">
                                         <label>票价</label>
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="inputPrice0">
@@ -104,15 +114,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group col-md-3 mb-3 mr-auto">
+                                    <div class="col-md-3 mb-3 mr-auto">
                                         <label>终点站</label>
-                                        <input class="form-control" type="text" name="inputStation1">
+                                        <input class="form-control" type="text" name="inputStation1"
+                                               pattern="^[\u4e00-\u9fa5]{1,10}$">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-1 pl-0">
                                 <button class="btn btn-outline-secondary mb-3 mr-3"
-                                        style="height: min-content;position: absolute;bottom:0;right: 0;display: none"
+                                        style="position: absolute;bottom:0;right: 0;display: none"
                                         type="button" id="buttonRemoveStation">
                                     <span class="feather feather-minus"></span>
                                 </button>
@@ -144,30 +155,37 @@
 {% block src %}
 
     <script>
-        let operation;
+        let operation,
+            btnRemoveDate = $(`<button class="btn btn-outline-secondary" type="button" id="buttonRemoveDate">` +
+                `<span class="feather feather-minus"></span></button>`);
 
         function addRow() {
             let divStations = $("#divStations"), len = divStations.children().length;
             divStations.append($(
-                `<div class="form-row collapse"><div class="form-group col-md-3 mb-3"><label>车站${len}</label>` +
-                `<input class="form-control" type="text" name="inputStation${len}" value="${divStations.find(`[name=inputStation${len}]`).val()}"></div>` +
-                `<div class="form-group col-md-2 mb-3"><label>出发时间</label><div class="input-group">` +
+                `<div class="form-row collapse"><div class="col-md-3 mb-3"><label>车站${len}</label>` +
+                `<input class="form-control" type="text" name="inputStation${len}" pattern="^[\u4e00-\u9fa5]{1,10}$" value="${divStations.find(`[name=inputStation${len}]`).val()}">` +
+                `</div><div class="col-md-2 mb-3"><label>出发时间</label><div class="input-group">` +
                 `<input class="form-control" type="text" id="hourDepart${len}" maxlength="2">` +
                 `<div class="input-group-prepend input-group-append">` +
                 `<span class="input-group-text pl-1 pr-1">:</span></div>` +
                 `<input class="form-control" type="text" id="minuteDepart${len}" maxlength="2">` +
-                `</div></div><div class="form-group col-md-2 mb-3"><label>到达时间</label><div class="input-group">` +
+                `</div></div><div class="col-md-2 mb-3"><label>到达时间</label><div class="input-group">` +
                 `<input class="form-control" type="text" id="hourArrive${len}" maxlength="2">` +
                 `<div class="input-group-prepend input-group-append">` +
                 `<span class="input-group-text pl-1 pr-1">:</span></div>` +
                 `<input class="form-control" type="text" id="minuteArrive${len}" maxlength="2">` +
-                `</div></div><div class="form-group col-md-2 mb-3"><label>票价</label><div class="input-group">` +
+                `</div></div><div class="col-md-2 mb-3"><label>票价</label><div class="input-group">` +
                 `<input class="form-control" type="text" id="inputPrice${len}">` +
                 `<div class="input-group-append"><span class="input-group-text pl-1 pr-1">￥</span></div></div>` +
-                `</div><div class="form-group col-md-3 mb-3 mr-auto"><label>终点站</label>` +
-                `<input class="form-control" type="text" name="inputStation${len + 1}"></div></div>`));
-            divStations.children().last().find("input[name^=inputStation]").inputSync();
-            divStations.children().last().find("input[id^='hour'],input[id^='minute'],input[name^='inputPrice']").inputFilter(function (str) {
+                `</div><div class="col-md-3 mb-3 mr-auto"><label>终点站</label>` +
+                `<input class="form-control" type="text" name="inputStation${len + 1}" pattern="^[\u4e00-\u9fa5]{1,10}$"></div></div>`));
+            divStations.children().last().find("input[name^=inputStation]").inputSync().on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("城市名为汉字，长度在不超过10。");
+                else
+                    this.setCustomValidity("");
+            });
+            divStations.children().last().find("input[id^='hour'],input[id^='minute'],input[id^='inputPrice']").inputFilter(function (str) {
                 return str.length === 0 || /^[1-9]\d*$/.test(str);
             });
             divStations.children().last().collapse("show");
@@ -203,8 +221,7 @@
                 $(`#${e.target.href.split("#")[1]} input`)[0].focus();
             });
             $("#buttonQueryProfile").click(function () {
-                let iptUseless = $("#formUser input").not("#inputUsername");
-                iptUseless.prop("required", false);
+                $("#formUser input").not("#inputUsername").prop("required", false).val("");
                 operation = 0;
             });
             $("#buttonAddUser").click(function () {
@@ -249,11 +266,11 @@
                                     return;
                                 } else {
                                     showInfo("查询用户信息成功。");
-                                    let info = ret["info"].split(" ");
-                                    iptUsername.val(info[0]);
-                                    iptName.val(info[1]);
-                                    iptEmail.val(info[2]);
-                                    iptPrivilege.val(info[3]);
+                                    let result = ret["result"].split(" ");
+                                    iptUsername.val(result[0]);
+                                    iptName.val(result[1]);
+                                    iptEmail.val(result[2]);
+                                    iptPrivilege.val(result[3]);
                                     break;
                                 }
                             case 1:
@@ -265,11 +282,11 @@
                                     return;
                                 } else {
                                     showInfo("修改用户信息成功。");
-                                    let info = ret["info"].split(" ");
-                                    iptUsername.val(info[0]);
-                                    iptName.val(info[1]);
-                                    iptEmail.val(info[2]);
-                                    iptPrivilege.val(info[3]);
+                                    let result = ret["result"].split(" ");
+                                    iptUsername.val(result[0]);
+                                    iptName.val(result[1]);
+                                    iptEmail.val(result[2]);
+                                    iptPrivilege.val(result[3]);
                                     break;
                                 }
                         }
@@ -277,11 +294,48 @@
                 });
                 return false;
             });
-
-            $("input[id^='hour'],input[id^='minute'],input[name^='inputPrice'],#inputSeatNumber").inputFilter(function (str) {
+            $("#inputTrainId").on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("车次只能包含数字、字母、下划线，以字母开头，长度小于20。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("#inputTrainType").on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("列车类型为一个大写字母。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("#buttonAddDate").click(function () {
+                let divDates = $("#divDates");
+                divDates.children().last().before($(`<div class="mb-3 pl-1 pr-1  width">` +
+                    `<input class="form-control" style="width: 172px" type="date" name="inputDate"></div>`));
+                divDates.children().last().prev().collapse("show");
+                if (divDates.children().length === 4) {
+                    this.before(btnRemoveDate[0]);
+                }
+            });
+            btnRemoveDate.click(function () {
+                let divDates = $("#divDates");
+                if (divDates.children().length === 3)
+                    return;
+                divDates.children().last().prev().collapse("hide");
+                divDates.children().last().prev().on("hidden.bs.collapse", function () {
+                    $(this).remove();
+                    if (divDates.children().length === 3) {
+                        btnRemoveDate.detach();
+                    }
+                });
+            });
+            $("input[id^='hour'],input[id^='minute'],input[id^='inputPrice'],#inputSeatNumber").inputFilter(function (str) {
                 return str.length === 0 || /^[1-9]\d*$/.test(str);
             });
-            $("input[name^='inputStation']").inputSync();
+            $("input[name^='inputStation']").inputSync().on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("城市名为汉字，长度在不超过10。");
+                else
+                    this.setCustomValidity("");
+            });
             $("#buttonAddStation").click(function () {
                 let rows = $("#divStations").children();
                 rows.last().find("label:last").html(`车站${rows.length}`);
@@ -290,10 +344,10 @@
             });
             $("#buttonRemoveStation").click(function () {
                 let divStations = $("#divStations");
+                if (divStations.children().length === 1)
+                    return;
                 divStations.children().last().collapse("hide");
                 divStations.children().last().on("hidden.bs.collapse", function () {
-                    if (divStations.children().length === 1)
-                        return;
                     $(this).remove();
                     $(this).find("label:last").html(`终点站`);
                     if (divStations.children().length === 1)
@@ -302,17 +356,18 @@
             });
             $("#buttonQueryTrain").click(function () {
                 operation = 3;
+                $("#formTrain input").not($("#inputTrainId, #inputDate").prop("required", true)).prop("required", false).val("");
             });
             $("#buttonAddTrain").click(function () {
                 $("#formTrain input").prop("required", true);
                 operation = 4;
             });
             $("#buttonDeleteTrain").click(function () {
-                $("#formTrain input").not($("#inputTrainId")).prop("required", false);
+                $("#formTrain input").not($("#inputTrainId")).prop("required", false).val("");
                 operation = 5;
             });
             $("#buttonReleaseTrain").click(function () {
-                $("#formTrain input").not($("#inputTrainId")).prop("required", false);
+                $("#formTrain input").not($("#inputTrainId")).prop("required", false).val("");
                 operation = 6;
             });
             $("#formTrain").submit(function (e) {
@@ -320,28 +375,74 @@
                 e.stopPropagation();
                 let rows = $("#divStations").children();
                 let dat = {
+                    "op": operation,
                     "trainId": $("#inputTrainId").val(),
                     "stationNumber": rows.length + 1,
                     "trainType": $("#inputTrainType").val(),
                     "seatNumber": $("#inputSeatNumber").val(),
-                    "stations": $.map($("input[name^='inputStation']"), function (e) {
+                    "stations": $.map($.merge($("input[name='inputStation0']"), $("input[name^='inputStation']").odd()), function (e) {
                         return $(e).val();
                     }).join("|"),
                     "prices": $.map($("input[id^='inputPrice']"), function (e) {
                         return $(e).val();
-                    }).val().join("|"),
+                    }).join("|"),
                     "startTime": `${$("#hourDepart0").val()}:${$("#minuteDepart0").val()}`,
                     "travelTimes": $.map(rows, function (e) {
-                        return (((parseInt(e.find("input[id^='hourArrive']").val()) - parseInt(e.find("input[id^='hourDepart']").val())) % 24 + 24) % 24) * 60
-                            + parseInt(e.find("input[id^='minuteArrive']").val()) - parseInt(e.find("input[id^='minuteDepart']").val()).toString();
+                        return (((parseInt($(e).find("input[id^='hourArrive']").val()) - parseInt($(e).find("input[id^='hourDepart']").val())) % 24 + 24) % 24) * 60
+                            + parseInt($(e).find("input[id^='minuteArrive']").val()) - parseInt($(e).find("input[id^='minuteDepart']").val()).toString();
                     }).join("|"),
-                    "stopoverTimes": rows.length !== 1 ? Array(rows.length - 1).keys().map(function (i) {
-                        return (((parseInt(rows.find(`input[id="hourArrive${i + 1}"]`).val()) - parseInt(rows.find(`input[id="hourDepart${i}"]`).val())) % 24 + 24) % 24) * 60
-                            + parseInt(rows.find(`input[id="minuteArrive${i + 1}"]`).val()) - parseInt(rows.find(`input[id="minuteDepart${i}"]`).val()).toString();
+                    "stopoverTimes": rows.length !== 1 ? Array.from(Array(rows.length - 1).keys()).map(function (i) {
+                        return (((parseInt(rows.find(`input[id = "hourDepart${i + 1}"]`).val()) - parseInt(rows.find(`input[id = "hourArrive${i}"]`).val())) % 24 + 24) % 24) * 60
+                            + parseInt(rows.find(`input[id = "minuteDepart${i + 1}"]`).val()) - parseInt(rows.find(`input[id = "minuteArrive${i}"]`).val()).toString();
                     }).join("|") : "_",
-                    "saleDate":
+                    "saleDate": $.map($("input[name='inputDate']"), function (e) {
+                        return $(e).val().replace(/[0-9]*-/, "");
+                    }).join("|")
                 };
-                console.log(dat);
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "/manage",
+                    dataType: "json",
+                    data: JSON.stringify(dat),
+                    success: function (ret) {
+                        switch (dat["op"]) {
+                            case 3:
+                                if (ret["e"]) {
+                                    showInfo("查询车次信息失败。");
+                                    return;
+                                } else {
+                                    let data = [],
+                                        head = ret["result"][0].replace(" ", " ——— "),
+                                        table = `<div class="modal-body table-responsive px-3 py-0"><table class="table mb-0">` +
+                                            `<thead><tr><th scope="col">出发站</th><th scope="col">发车时间</th>` +
+                                            `<th scope="col">到达站</th><th scope="col">到达时间</th>` +
+                                            `<th scope="col">票价</th><th scope="col">余票</th></tr></thead><tbody>`;
+                                    ret["result"].slice(1).forEach(function (row, ind) {
+                                        let e = row.split(" ");
+                                        data.push([].concat(e.slice(0, 3), e.slice(4, 6), [parseInt(e[6]), parseInt(e[7])]));
+                                    });
+                                    for (let i = 1; i < data.length; i++)
+                                        table += `<tr><td>${data[i - 1][0]}</td><td>${data[i - 1][3]} ${data[i - 1][4]}</td>` +
+                                            `<td>${data[i][0]}</td><td>${data[i][1]} ${data[i][2]}</td>` +
+                                            `<td>${data[i][5] - data[i - 1][5]}<strong>元</strong></td><td>${data[i - 1][6]}</td></tr>`;
+                                    table += "</tbody></table></div>";
+                                    showMessage(table, head, "modal-dialog-centered modal-dialog-scrollable modal-lg");
+                                    break;
+                                }
+                            case 4:
+                                showInfo(`添加车次${ret["e"] ? "失败" : "成功"}。`);
+                                break;
+                            case 5:
+                                showInfo(`删除车次${ret["e"] ? "失败" : "成功"}。`);
+                                break;
+                            case 6:
+                                showInfo(`发布车次${ret["e"] ? "失败" : "成功"}。`);
+                                break;
+                        }
+                    }
+                });
+                return false;
             })
         });
     </script>

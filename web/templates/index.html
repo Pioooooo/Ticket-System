@@ -96,11 +96,11 @@
                 data: JSON.stringify(dat),
                 success: function (ret) {
                     if (ret["e"])
-                        showMessage("购票失败，请重试。");
+                        showMessage("<div class='modal-body'>购票失败，请重试。</div>");
                     else if (ret["tot"] === "queue")
-                        showMessage("余票不足，已加入候补购票队列。");
+                        showMessage("<div class='modal-body'>余票不足，已加入候补购票队列。</div>");
                     else
-                        showMessage(`购票成功，总价${ret["tot"]}￥`);
+                        showMessage(`<div class="modal-body">购票成功，总价${ret["tot"]}￥</div>`);
                 }
             });
         }
@@ -117,7 +117,7 @@
                     `<td class="align-middle">${e[2]}  ${e[3]}</td>` +
                     `<td class="align-middle">${e[4]}</td>` +
                     `<td class="align-middle">${e[5]}  ${e[6]}</td>` +
-                    `<td class="align-middle">${e[7]}</td>` +
+                    `<td class="align-middle">${e[7]}元</td>` +
                     `<td class="align-middle">${e[8]}</td>` +
                     `<td class="align-middle"><form class="input-group" id="formCount${n}">` +
                     `<input class="form-control" id="inputCount${n}" type="text" value="1" pattern="^[1-9]\\d*$">` +
@@ -141,13 +141,7 @@
         }
 
         $(function () {
-            $("#inputFrom").on("input", function () {
-                if (this.validity.patternMismatch)
-                    this.setCustomValidity("城市名为汉字，长度在不超过10。");
-                else
-                    this.setCustomValidity("");
-            });
-            $("#inputTo").on("input", function () {
+            $("#inputFrom, #inputTo").on("input", function () {
                 if (this.validity.patternMismatch)
                     this.setCustomValidity("城市名为汉字，长度在不超过10。");
                 else
@@ -183,7 +177,7 @@
                             data = [];
                             ret["result"].forEach(function (row, ind) {
                                 let e = row.split(" ");
-                                data.push([].concat(e.slice(0, 4), e.slice(5, 8), [parseFloat(e[8]).toFixed(2), parseInt(e[9])]));
+                                data.push([].concat(e.slice(0, 4), e.slice(5, 8), [parseInt(e[8]), parseInt(e[9])]));
                             });
                             createTable();
                         }

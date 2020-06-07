@@ -3,16 +3,38 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" id="content">Utilities for layout</h1>
-    <button class="btn btn-outline-primary" type="submit">test</button>
-    <span class="feather feather-git-branch"></span>
+    <div class="container table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="row">车次</th>
+                <td colspan="2">HAPPY_TRAIN</td>
+                <th scope="row">列车类型</th>
+                <td colspan="2">G</td>
+            </tr>
+            <tr>
+                <th scope="col">出发站</th>
+                <th scope="col">发车时间</th>
+                <th scope="col">到达站</th>
+                <th scope="col">到达时间</th>
+                <th scope="col">票价</th>
+                <th scope="col">余票</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>中院</td>
+                <td>08-17 05:24</td>
+                <td>下院</td>
+                <td>08-17 15:24</td>
+                <td>514元</td>
+                <td>1000</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 {% block src %}
     <script>
-        $(function () {
-            $(".btn").click(function () {
-                showInfo("test");
-            })
-        });
     </script>
 {% endblock %}

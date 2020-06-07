@@ -36,10 +36,8 @@ def index():
                  str(request.json['wait']).lower()])
             if ret[0] == '-1':
                 return {'e': -1, 'msg': 'Buy ticket failed.'}
-            elif ret[0] == 'queue':
-                return {'e': 0, 'op': 1}
             else:
-                return {'e': 0, 'op': 0, 'tot': ret[0]}
+                return {'e': 0, 'tot': ret[0]}
         else:
             return {'e': -100, 'msg': 'Unrecognized request.'}
 
@@ -126,7 +124,7 @@ def manage():
             ret = core.exec(['query_profile', '-c', session['username'], '-u', request.json['username']])
             if ret[0] == '-1':
                 return {'e': -1}
-            return {'e': 0, 'info': ret[0]}
+            return {'e': 0, 'result': ret[0]}
         elif request.json['op'] == 1:
             ret = core.exec(
                 ['add_user', '-c', session['username'], '-u', request.json['username'], '-p', request.json['password'],
@@ -141,7 +139,27 @@ def manage():
             ret = core.exec(args)
             if ret[0] == '-1':
                 return {'e': -1}
-            return {'e': 0, 'info': ret[0]}
+            return {'e': 0, 'result': ret[0]}
+        elif request.json['op'] == 3:
+            ret = core.exec(['query_train', '-i', request.json['trainId'], '-d', request.json['saleDate'][:5]])
+            if ret[0] == '-1':
+                return {'e': -1}
+            return {'e': 0, 'result': ret}
+        elif request.json['op'] == 4:
+            ret = core.exec(['add_train', '-i', request.json['trainId'], '-n', str(request.json['stationNumber']), '-m',
+                             request.json['seatNumber'], '-s', request.json['stations'], '-p', request.json['prices'],
+                             '-x', request.json['startTime'], '-t', request.json['travelTimes'], '-o',
+                             request.json['stopoverTimes'], '-d', request.json['saleDate'], '-y',
+                             request.json['trainType']])
+            return {'e': int(ret[0])}
+        elif request.json['op'] == 5:
+            ret = core.exec(['delete_train', '-i', request.json['trainId']])
+            return {'e': int(ret[0])}
+        elif request.json['op'] == 6:
+            ret = core.exec(['release_train', '-i', request.json['trainId']])
+            return {'e': int(ret[0])}
+        else:
+            return {'e': -100, 'msg': 'Unrecognized request.'}
 
 
 @app.route('/exec', methods=['POST'])
