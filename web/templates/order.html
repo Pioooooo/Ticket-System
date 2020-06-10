@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% set curSide = "订单" %}
+
+{% block content %}
+
+    <div class="col-auto py-md-3 bd-content">
+        <h2 class="mb-3">我的订单</h2>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th style="width: 2%" scope="col">#</th>
+                    <th style="width: 20%" scope="col">车次</th>
+                    <th style="width: 11%" scope="col">出发站</th>
+                    <th style="width: 12%" scope="col">发车时间</th>
+                    <th style="width: 11%" scope="col">到达站</th>
+                    <th style="width: 12%" scope="col">到达时间</th>
+                    <th style="width: 8%" scope="col">单价</th>
+                    <th style="width: 8%" scope="col">数量</th>
+                    <th style="width: 8%" scope="col">状态</th>
+                    <th class="p-0 align-middle text-center" style="width: 8%">
+                        <button class="btn btn-outline-primary border-0" type="button" id="buttonRefresh">
+                            <i class="feather feather-refresh-ccw"></i>
+                        </button>
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="tableOrder">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block src %}
+
+    <script>
+        let data;
+
+        function refundTicket(n) {
+            let dat = {
+                "op": 1,
+                "n": n.toString()
+            };
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/order",
+                dataType: "json",
+                data: JSON.stringify(dat),
+                success: function (ret) {
+                    showMessage(`<div class='modal-body'>退票${ret["e"] ? "失败，请重试" : "成功"}。</div>`);
+                    if (!ret["e"])
+                        $("#buttonRefresh").click();
+                }
+            });
+        }
+
+        function createTable() {
+            console.log(data);
+            $(".table-responsive").show();
+            let table = $("#tableOrder");
+            table.empty();
+            let tot = data.length;
+            data.forEach(function (e, n) {
+                let row = `<tr><th class="align-middle" scope="row">${n + 1}</th>` +
+                    `<td class="align-middle">${e[0]}</td>` +
+                    `<td class="align-middle">${e[1]}</td>` +
+                    `<td class="align-middle">${e[2]}  ${e[3]}</td>` +
+                    `<td class="align-middle">${e[4]}</td>` +
+                    `<td class="align-middle">${e[5]}  ${e[6]}</td>` +
+                    `<td class="align-middle">${e[7]}￥</td>` +
+                    `<td class="align-middle">×${e[8]}</td>`;
+                if (e[9] === "[success]")
+                    row += `<td class="align-middle text-success">已购票</td><td class="align-middle text-center p-0">` +
+                        `<button class="btn btn-sm btn-outline-primary" type="button" id="buttonRefund${n}">退票</button></td></tr>`;
+                else if (e[9] === "[pending]")
+                    row += `<td class="align-middle text-info">候补中</td><td class="align-middle text-center p-0">` +
+                        `<button class="btn btn-sm btn-outline-primary" type="button" id="buttonRefund${n}">退票</button></td></tr>`;
+                else
+                    row += `<td class="align-middle text-secondary">已退票</td><td></td></tr>`;
+
+                table.append($(row));
+                $(`#buttonRefund${n}`).click(function () {
+                    refundTicket(n);
+                });
+            });
+            if (!tot)
+                table.append($(`<tr><td class="align-middle text-center" colspan="10">无搜索结果。</td></tr>`));
+        }
+
+        $(function () {
+            $("#buttonRefresh").click(function () {
+                let dat = {
+                    "op": 0
+                };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "/order",
+                    dataType: "json",
+                    data: JSON.stringify(dat),
+                    success: function (ret) {
+                        if (ret['e'])
+                            showInfo("查询订单失败。");
+                        else {
+                            data = [];
+                            ret["result"].forEach(function (row, ind) {
+                                let e = row.split(" ");
+                                data.push([].concat(e.slice(1, 5), e.slice(6, 9), [parseInt(e[9]), parseInt(e[10]), e[0]]));
+                            });
+                            createTable();
+                        }
+                    }
+                });
+            }).click();
+        });
+    </script>
+
+{% endblock %}

@@ -3,38 +3,48 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container table-responsive">
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="row">车次</th>
-                <td colspan="2">HAPPY_TRAIN</td>
-                <th scope="row">列车类型</th>
-                <td colspan="2">G</td>
-            </tr>
-            <tr>
-                <th scope="col">出发站</th>
-                <th scope="col">发车时间</th>
-                <th scope="col">到达站</th>
-                <th scope="col">到达时间</th>
-                <th scope="col">票价</th>
-                <th scope="col">余票</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>中院</td>
-                <td>08-17 05:24</td>
-                <td>下院</td>
-                <td>08-17 15:24</td>
-                <td>514元</td>
-                <td>1000</td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="container">
+        <div class="row pt-3">
+            <div class="col col-sm-auto mb-3">
+                <div class="mx-auto" style="width: 90px;">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="height: 90px">
+                        <img class="w-100 h-100 rounded-circle" src="" alt="avatar" data-letter="人">
+                    </div>
+                </div>
+            </div>
+            <div class="col d-flex flex-column flex-md-row justify-content-between mb-3 pl-0">
+                <div class="text-center text-sm-left mb-2 mb-sm-0">
+                    <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">孙晨曦</h4>
+                    <p class="mb-0">@Pioooooo</p>
+                    <div class="text-muted"><small>bowen.sun@qq.com</small></div>
+                </div>
+                <div class="text-center text-sm-right">
+                    <span class="badge badge-secondary">Privilege:3</span>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
+
 {% block src %}
+    <script src="{{ url_for("static",filename="js/seedrandom.min.js") }}"></script>
     <script>
+        Math.seedrandom("{{ session["username"] }}");
+        $("img[data-letter]").each(function (k, e) {
+            let canvas = $("<canvas></canvas>")[0];
+            let context = canvas.getContext("2d");
+            let size = $(e).prop("width") || 60;
+            canvas.width = size;
+            canvas.height = size;
+            context.font = Math.round(canvas.width / 2) + "px Arial";
+            context.textAlign = "center";
+            context.fillStyle = "#" + (Math.random() * 0xFFFFFF << 0).toString(16);
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = "#FFF";
+            context.fillText($(e).attr("data-letter"), size / 2, size / 1.5);
+            e.src = canvas.toDataURL();
+            $(e).removeAttr('data-letter');
+        });
     </script>
 {% endblock %}

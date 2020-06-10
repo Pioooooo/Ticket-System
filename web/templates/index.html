@@ -67,7 +67,6 @@
                 <tbody id="tableTrain"></tbody>
             </table>
         </div>
-        <div id="textError"></div>
     </div>
 
 {% endblock %}
@@ -101,6 +100,7 @@
                         showMessage("<div class='modal-body'>余票不足，已加入候补购票队列。</div>");
                     else
                         showMessage(`<div class="modal-body">购票成功，总价${ret["tot"]}￥</div>`);
+                    $("#buttonQuery").click();
                 }
             });
         }
@@ -117,8 +117,8 @@
                     `<td class="align-middle">${e[2]}  ${e[3]}</td>` +
                     `<td class="align-middle">${e[4]}</td>` +
                     `<td class="align-middle">${e[5]}  ${e[6]}</td>` +
-                    `<td class="align-middle">${e[7]}元</td>` +
-                    `<td class="align-middle">${e[8]}</td>` +
+                    `<td class="align-middle">${e[7]}￥</td>` +
+                    `<td class="align-middle">×${e[8]}</td>` +
                     `<td class="align-middle"><form class="input-group" id="formCount${n}">` +
                     `<input class="form-control" id="inputCount${n}" type="text" value="1" pattern="^[1-9]\\d*$">` +
                     `<div class="input-group-append">` +
@@ -172,10 +172,10 @@
                     data: JSON.stringify(dat),
                     success: function (ret) {
                         if (ret['e'])
-                            $("#textError").html("Query failed! Please retry");
+                            showInfo("查询车票失败。");
                         else {
                             data = [];
-                            ret["result"].forEach(function (row, ind) {
+                            ret["result"].forEach(function (row) {
                                 let e = row.split(" ");
                                 data.push([].concat(e.slice(0, 4), e.slice(5, 8), [parseInt(e[8]), parseInt(e[9])]));
                             });

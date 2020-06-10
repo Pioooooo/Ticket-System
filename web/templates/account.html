@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% set curSide = "账户" %}
+
+{% block content %}
+
+    <div class="col-auto py-md-3 bd-content">
+        <h2 class="mb-3">个人中心</h2>
+        <div class="row">
+            <div class="col col-sm-auto mb-3">
+                <div class="mx-auto" style="width: 90px;">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="height: 90px">
+                        <img class="w-100 h-100 rounded-circle" src="" alt="avatar"
+                             data-letter="{{ info["name"][0] }}">
+                    </div>
+                </div>
+            </div>
+            <div class="col d-flex flex-column flex-md-row justify-content-between mb-3 pl-0">
+                <div class="text-center text-sm-left mb-2 mb-sm-0">
+                    <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap" id="textName">{{ info["name"] }}</h4>
+                    <p class="mb-0">@{{ info["username"] }}</p>
+                    <div class="text-muted"><small id="textEmail">{{ info["email"] }}</small></div>
+                </div>
+                <div class="text-center text-sm-right">
+                    <span class="badge badge-secondary">用户权限:{{ info["privilege"] }}</span>
+                </div>
+            </div>
+        </div>
+        <form id="formAccount">
+            <div class="row">
+                <div class="col form-group">
+                    <label>姓名</label>
+                    <input class="form-control" type="text" id="inputName" placeholder="{{ info["name"] }}"
+                           pattern="^[\u4e00-\u9fa5]{2,5}$">
+                </div>
+                <div class="col form-group">
+                    <label>邮箱</label>
+                    <input class="form-control" type="email" id="inputEmail"
+                           placeholder="{{ info["email"] }}">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col form-group">
+                    <label>新密码</label>
+                    <input class="form-control" type="password" id="inputPassword">
+                </div>
+                <div class="col form-group">
+                    <label>确认密码</label>
+                    <input class="form-control" type="password" id="inputPasswordConfirm">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col d-flex justify-content-end">
+                    <button class="btn btn-primary" type="submit" id="buttonSave">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block src %}
+    <script src="{{ url_for("static",filename="js/seedrandom.min.js") }}"></script>
+    <script>
+        $(function () {
+            Math.seedrandom("{{ info["username"] }}");
+            $("img[data-letter]").each(function (k, e) {
+                let canvas = $("<canvas></canvas>")[0];
+                let context = canvas.getContext("2d");
+                let size = $(e).prop("width") || 60;
+                canvas.width = size;
+                canvas.height = size;
+                context.font = Math.round(canvas.width / 2) + "px Arial";
+                context.textAlign = "center";
+                context.fillStyle = "#" + (Math.random() * 0xFFFFFF << 0).toString(16);
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                context.fillStyle = "#FFF";
+                context.fillText($(e).attr("data-letter"), size / 2, size / 1.5);
+                e.src = canvas.toDataURL();
+                $(e).removeAttr('data-letter');
+            });
+            $("#inputName").on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("姓名只能为汉字，长度在2-5之间。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("#inputEmail").on("input", function () {
+                if (this.validity.typeMismatch)
+                    this.setCustomValidity("请输入正确的邮件格式。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("#inputPassword").on("input", function () {
+                if (this.validity.patternMismatch)
+                    this.setCustomValidity("密码只能包含数字、字母、下划线，长度在6-30之间。");
+                else
+                    this.setCustomValidity("");
+                let iptConfirm = $("#inputPasswordConfirm");
+                iptConfirm.prop("required", $(this).val() !== "");
+                iptConfirm.trigger("input");
+            });
+            $("#inputPasswordConfirm").on("input", function () {
+                if ($(this).val() !== "" && $(this).val() !== $("#inputPassword").val())
+                    this.setCustomValidity("两次输入的密码不一致。");
+                else
+                    this.setCustomValidity("");
+            });
+            $("#formAccount").submit(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                let iptName = $("#inputName"),
+                    iptEmail = $("#inputEmail");
+                let dat = {
+                    "op": 0,
+                    "name": iptName.val(),
+                    "email": iptEmail.val(),
+                    "password": $("#inputPassword").val()
+                };
+                if (dat["name"] === "" && dat["email"] === "" && dat["password"] === "") {
+                    showInfo("个人信息没有修改。");
+                    return false;
+                }
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "/account",
+                    dataType: "json",
+                    data: JSON.stringify(dat),
+                    success: function (ret) {
+                        if (ret["e"])
+                            showInfo("修改个人信息失败。");
+                        else {
+                            showInfo("修改个人信息成功");
+                            let result = ret["result"].split(" ");
+                            $("#tabName").html(result[1]);
+                            iptName.prop("placeholder", result[1]);
+                            iptName.val("");
+                            $("#textName").html(result[1]);
+                            iptEmail.prop("placeholder", result[2]);
+                            iptEmail.val("");
+                            $("#textEmail").html(result[2]);
+                            $("input[id^='inputPassword']").val("");
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+
+{% endblock %}

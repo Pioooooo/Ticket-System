@@ -58,9 +58,9 @@
                 <a class="nav-link" href="/order">订单</a>
             </li>
             <li class="nav-item dropdown {% if curSide == "账户" %}active{% endif %}">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="/account">{{ session["username"] }}</a>
+                <a class="nav-link dropdown-toggle" id="tabName" data-toggle="dropdown">{{ info["name"] }}</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/profile">个人资料</a>
+                    <a class="dropdown-item" href="/account">账户资料</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" id="buttonLogout">登出</a>
                 </div>

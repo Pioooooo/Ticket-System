@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, session, redirect, url_for
 from executable import Executable
-import requests
+from requests import post
 
 app = Flask("web")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -9,13 +9,19 @@ app.jinja_env.auto_reload = True
 core = Executable('../core/core.exe')
 
 
+def __get_info():
+    info = core.exec(['query_profile', '-c', session.get('username'), '-u', session.get('username')])[0].split(' ')
+    ret = {'username': info[0], 'name': info[1], 'email': info[2], 'privilege': info[3]}
+    return ret
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
         if session.get('username') is None:
             return redirect(url_for('login', f='index'))
         else:
-            return render_template('index.html', ses=session)
+            return render_template('index.html', info=__get_info())
     else:
         if request.json['op'] == 0:
             ret = core.exec(
@@ -55,7 +61,7 @@ def login():
             if int(ret[0]):
                 return {'e': -1}
             else:
-                r = requests.post('http://127.0.0.1:8000/check.php', {'username': request.json['username']}).json()
+                r = post('http://127.0.0.1:8000/check.php', {'username': request.json['username']}).json()
                 if r['e'] == 0:
                     session['username'] = request.json['username']
                     return {'e': 0}
@@ -73,11 +79,11 @@ def login():
             session.pop('username')
             return {'e': int(ret[0])}
         elif request.json['op'] == 3:
-            r = requests.post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone'], 'op': 1})
+            r = post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone'], 'op': 1})
             return r.text
         elif request.json['op'] == 4:
-            r = requests.post('http://127.0.0.1:8000/login.php',
-                              {'phone': request.json['phone'], 'code': request.json['code']}).json()
+            r = post('http://127.0.0.1:8000/login.php',
+                     {'phone': request.json['phone'], 'code': request.json['code']}).json()
             if r['e'] == 0:
                 session['username'] = r['username']
                 return {'e': 0}
@@ -93,15 +99,15 @@ def phoneverify():
         if session.get('username2') is None:
             return redirect(url_for('index', f='index'))
         else:
-            return render_template('phoneverify.html', ses=session)
+            return render_template('phoneverify.html')
     else:
         if request.json['op'] == 0:
-            r = requests.post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone'], 'op': 0})
+            r = post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone'], 'op': 0})
             return r.text
         elif request.json['op'] == 1:
-            r = requests.post('http://127.0.0.1:8000/phoneverify.php',
-                              {'phone': request.json['phone'], 'code': request.json['code'],
-                               'username': session['username2']}).json()
+            r = post('http://127.0.0.1:8000/phoneverify.php',
+                     {'phone': request.json['phone'], 'code': request.json['code'],
+                      'username': session['username2']}).json()
             if r['e'] == 0:
                 session['username'] = session['username2']
                 session.pop('username2')
@@ -118,7 +124,7 @@ def manage():
         if session.get('username') is None:
             return redirect(url_for('login', f='manage'))
         else:
-            return render_template('manage.html', ses=session)
+            return render_template('manage.html', info=__get_info())
     else:
         if request.json['op'] == 0:
             ret = core.exec(['query_profile', '-c', session['username'], '-u', request.json['username']])
@@ -162,18 +168,58 @@ def manage():
             return {'e': -100, 'msg': 'Unrecognized request.'}
 
 
+@app.route('/order', methods=['GET', 'POST'])
+def order():
+    if request.method == 'GET':
+        if session.get('username') is None:
+            return redirect(url_for('login', f='order'))
+        else:
+            return render_template('order.html', info=__get_info())
+    else:
+        if request.json['op'] == 0:
+            ret = core.exec(['query_order', '-u', session['username']])
+            if ret[0] == '-1':
+                return {'e': -1}
+            return {'e': 0, 'tot': int(ret[0]), 'result': ret[1:]}
+        elif request.json['op'] == 1:
+            ret = core.exec(['refund_ticket', '-n', request.json['n']])
+            return {'e': int(ret[0])}
+        else:
+            return {'e': -100, 'msg': 'Unrecognized request.'}
+
+
+@app.route('/account', methods=['GET', 'POST'])
+def account():
+    if request.method == 'GET':
+        if session.get('username') is None:
+            return redirect(url_for('login', f='account'))
+        else:
+            return render_template('account.html', info=__get_info())
+    else:
+        if request.json['op'] == 0:
+            args = ['modify_profile', '-c', session['username'], '-u', session['username']]
+            args.extend(['-p', request.json['password']] if request.json['password'] != '' else [])
+            args.extend(['-n', request.json['name']] if request.json['name'] != '' else [])
+            args.extend(['-m', request.json['email']] if request.json['email'] != '' else [])
+            ret = core.exec(args)
+            if ret[0] == '-1':
+                return {'e': -1}
+            return {'e': 0, 'result': ret[0]}
+        else:
+            return {'e': -100, 'msg': 'Unrecognized request.'}
+
+
 @app.route('/exec', methods=['POST'])
 def execute():
-    data = request.json
-    if data:
-        tmp = core.exec([data['cmd']])
-        return {'result': tmp}
+    for args in request.json['cmd']:
+        core.exec(args)
+    return {}
 
 
-@app.route('/tmp')
-def tmp():
-    return render_template('tmp.html', f="index")
-
+if app.debug:
+    @app.route('/tmp')
+    def tmp():
+        return render_template('tmp.html', f="index")
 
 if __name__ == '__main__':
     app.run()
