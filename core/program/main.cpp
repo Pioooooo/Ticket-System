@@ -23,7 +23,6 @@ struct user {
     user(){privilege=-1;}
 };
 sjtu::BTree<unsigned long long, user> user_table("user_table.data","user_table.data2");
-sjtu::map<unsigned long long, bool> session;
 struct train{
     char trainID[21],stations[100][31],type[2];
     int stationNum,seatNumId[93],prices[100],startTime[2],travelTimes[100],stopoverTimes[100],saleDate[4];
@@ -168,10 +167,6 @@ inline void add_user(){
         user_order_table.insert(hash(new_user.username), order_list());
         printf("0\n");
     }else{
-        if (session.find(hash(cur_username))==session.end()){
-            printf("-1\n");
-            return;
-        }
         user cur_user=user_table.at(hash(cur_username));
         if (cur_user.privilege>new_user.privilege && user_table.find(hash(new_user.username))==user_table.end()){
             user_table.insert(hash(new_user.username), new_user);
@@ -193,8 +188,7 @@ inline void login(){
         }
     }
     user user=user_table.at(hash(username));
-    if (user.privilege!=-1 && strcmp(user.password,password)==0 && session.find(hash(username))==session.end()){
-        session.insert(sjtu::pair<unsigned long long, bool>(hash(username),true));
+    if (user.privilege!=-1 && strcmp(user.password,password)==0){
         printf("0\n");
     }else{
         printf("-1\n");
@@ -209,12 +203,7 @@ inline void logout(){
             default:break;
         }
     }
-    if (session.find(hash(username))!=session.end()){
-        session.erase(session.find(hash(username)));
-        printf("0\n");
-    }else{
-        printf("-1\n");
-    }
+    printf("0\n");
 }
 inline void query_profile(){
     char c;
@@ -226,7 +215,7 @@ inline void query_profile(){
             default:break;
         }
     }
-    if (session.find(hash(cur_username))!=session.end()){
+    if (true){
         user cur,user;
         cur=user_table.at(hash(cur_username));
         user=user_table.at(hash(username));
@@ -254,7 +243,7 @@ inline void modify_profile(){
             default:break;
         }
     }
-    if (session.find(hash(cur_username))!=session.end()){
+    if (true){
         user cur,user;
         cur=user_table.at(hash(cur_username));
         user=user_table.at(hash(new_user.username));
@@ -633,7 +622,6 @@ inline void buy_ticket(){
             default:break;
         }
     }
-    if (session.find(hash(username))==session.end()){printf("-1\n");return;}
     train train=train_table.at(hash(trainID));
     if (train.release==-1){printf("-1\n");return;}
     int timestamp=calctimestamp(train.saleDate[0],train.saleDate[1],train.startTime[0],train.startTime[1]),price=0,seat=23333333;
@@ -721,7 +709,6 @@ inline void query_order(){
         }
     }
     const char status_bl[4][9]={"","success","pending","refunded"};
-    if (session.find(hash(username))==session.end()){printf("-1\n");return;}
     sjtu::vector<order_list> ans=user_order_get(hash(username));
     int num=0;
     for (auto x:ans) num+=x.size;
@@ -744,7 +731,6 @@ inline void refund_ticket(){
             default:break;
         }
     }
-    if (session.find(hash(username))==session.end()){printf("-1\n");return;}
     sjtu::vector<order_list> ans=user_order_get(hash(username));
     int realid=0;
     for (int I=(int)ans.size()-1;I>=0;I--){
@@ -790,7 +776,6 @@ inline void refund_ticket(){
 }
 inline void clean(){
     user_table.clear();
-    session.clear();
     train_table.clear();
     seat_table.clear();
     release_table.clear();
