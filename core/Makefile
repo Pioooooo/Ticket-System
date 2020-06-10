@@ -1,2 +1,2 @@
 code:
-	g++ program/main.cpp -o code -Ofast -std=c++14
+	g++ program/main.cpp -o core.exe -Ofast -std=c++14
