@@ -70,20 +70,23 @@
     </style>
 </head>
 
-<body class="tab-content text-center">
-<ul class="nav nav-tabs" hidden>
-    <li><a id="tabSMSVerify" href="#divSMSVerify" data-toggle="tab"></a></li>
-</ul>
-
-<div class="tab-pane fade show active" id="divSMSVerify">
+<body class="text-center">
+<div>
     <form class="form-login" id="formSMSVerify">
         <img class="mb-4" src="{{ url_for('static',filename='/image/icon-512x512.png') }}" alt="" width="72"
              height="72">
-        <input type="text" name="inputPhone" class="form-control" placeholder="手机号" pattern="^1(?:3\d{3}|5[^4\D]\d{2}|8\d{3}|7(?:[01356789]\d{2}|4(?:0\d|1[0-2]|9\d))|9[01356789]\d{2}|6[2567]\d{2})\d{6}$" required autofocus>
+        <input class="form-control mb-0"
+               style="margin-bottom: -1px;border-bottom-left-radius: 0;border-bottom-right-radius: 0" type="text"
+               id="inputPhone" placeholder="手机号"
+               pattern="^1(?:3\d{3}|5[^4\D]\d{2}|8\d{3}|7(?:[01356789]\d{2}|4(?:0\d|1[0-2]|9\d))|9[01356789]\d{2}|6[2567]\d{2})\d{6}$"
+               required>
         <div class="input-group mb-3">
-            <input type="text" name="inputCode" class="form-control" placeholder="验证码" pattern="^\d{6}$" required>
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" id="buttonSMSCode">发送验证码</button>
+            <input class="form-control" style="border-top-left-radius: 0" type="text" id="inputCode" placeholder="验证码"
+                   pattern="^\d{6}$" required>
+            <div class="input-group-append" style="height: 46px">
+                <button class="btn btn-outline-secondary" style="border-top-right-radius: 0" type="button"
+                        id="buttonSMSCode">发送验证码
+                </button>
             </div>
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit" id="buttonSMSVerify">确认</button>
@@ -101,13 +104,13 @@
 <script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script>
 <script>
     $(function () {
-        $("input[name='inputPhone']").on("input", function () {
+        $("#inputPhone").on("input", function () {
             if (this.validity.patternMismatch)
                 this.setCustomValidity("请输入正确的手机号。");
             else
                 this.setCustomValidity("");
         });
-        $("input[name='inputCode']").on("input", function () {
+        $("#inputCode").on("input", function () {
             if (this.validity.patternMismatch)
                 this.setCustomValidity("验证码为6位数字。");
             else
@@ -116,18 +119,21 @@
         $("a[data-toggle='tab']").on("shown.bs.tab", function (e) {
             $(`#${e.target.href.split("#")[1]} input`)[0].focus();
         });
-        $("#buttonSMSCode").click(function (e) {
-            if ($("input[name='inputPhone']")[0].validity.patternMismatch){
-                $("input[name='inputPhone']")[0].setCustomValidity("请输入正确的手机号。");
-                $("input[name='inputPhone']")[0].focus()
-		        return false;
-            }else{
-                $("input[name='inputPhone']")[0].setCustomValidity("");
-            }
-            let form = $("#formSMSVerify");
+        $("#buttonSMSCode").click(function () {
+            let iptPhone = $("#inputPhone");
+            if (iptPhone[0].validity.valueMissing) {
+                iptPhone[0].setCustomValidity("请填写手机号。")
+                iptPhone.focus();
+                return false;
+            } else if (iptPhone[0].validity.patternMismatch) {
+                iptPhone[0].setCustomValidity("请输入正确的手机号。");
+                iptPhone.focus();
+                return false;
+            } else
+                iptPhone[0].setCustomValidity("");
             let dat = {
                 "op": 0,
-                "phone": form.children("input[name='inputPhone']").val()
+                "phone": iptPhone.val()
             };
             $.ajax({
                 type: "POST",
@@ -136,13 +142,9 @@
                 dataType: "json",
                 data: JSON.stringify(dat),
                 success: function (ret) {
-                    if (ret["e"]){
-                        $("#buttonSMSCode").html("发送失败");
-                        $("#buttonSMSCode").attr("disabled",true);
-                    }else{
-                        $("#buttonSMSCode").html("已发送");
-                        $("#buttonSMSCode").attr("disabled",true);
-                    }
+                    let btnSMSCode = $("#buttonSMSCode");
+                    btnSMSCode.html(`${ret["e"] ? "发送失败" : "已发送"}`);
+                    btnSMSCode.prop("disabled", true);
                 }
             });
             return false;
@@ -150,11 +152,10 @@
         $("#formSMSVerify").submit(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            let form = $("#formSMSVerify");
             let dat = {
                 "op": 1,
-                "phone": form.children("input[name='inputPhone']").val(),
-                "code": form.children("div").children("input[name='inputCode']").val()
+                "phone": $("#inputPhone").val(),
+                "code": $("#inputCode").val()
             };
             $.ajax({
                 type: "POST",
