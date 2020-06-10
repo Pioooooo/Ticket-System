@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% set curSide = "批量指令执行" %}
+
+{% block head %}
+    <style>
+        .string {
+            color: green;
+        }
+
+        .number {
+            color: darkorange;
+        }
+
+        .boolean {
+            color: blue;
+        }
+
+        .null {
+            color: magenta;
+        }
+
+        .key {
+            color: red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="col-auto py-md-3 bd-content">
+        <h2 class="mb-3">批量执行指令</h2>
+        <form id="formCommand">
+            <div class="form-group">
+                <label for="inputCommand">指令</label>
+                <textarea class="form-control" id="inputCommand" rows="25"></textarea>
+            </div>
+            <div class="row">
+                <div class="col d-flex justify-content-end">
+                    <button class="btn btn-primary" type="submit" id="buttonExecute">执行</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block src %}
+    <script>
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        $(function () {
+            $("#formCommand").submit(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                let dat = {
+                    "op": 0,
+                    "cmd": $("#inputCommand").val()
+                };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "/exec",
+                    dataType: "json",
+                    data: JSON.stringify(dat),
+                    success: function (ret) {
+                        showMessage(`<div class='modal-body'><pre>${syntaxHighlight(JSON.stringify(ret, null, 4))}</pre></div>`, "执行结果", "modal-dialog-centered modal-dialog-scrollable modal-lg");
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+
+{% endblock %}

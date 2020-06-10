@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, session, redirect, url_for
+from flask import Flask, request, render_template, session, redirect, url_for, abort
 from executable import Executable
 from requests import post
 
@@ -209,17 +209,23 @@ def account():
             return {'e': -100, 'msg': 'Unrecognized request.'}
 
 
-@app.route('/exec', methods=['POST'])
+@app.route('/exec', methods=['GET', 'POST'])
 def execute():
-    for args in request.json['cmd']:
-        core.exec(args)
-    return {}
+    if request.method == 'GET':
+        if session['username'] == 'root':
+            return render_template('execute.html', info=__get_info())
+        abort(404)
+    else:
+        ret = []
+        for args in request.json['cmd'].split('\n'):
+            ret.append(core.exec([args]))
+        return {'result': ret}
 
 
 if app.debug:
     @app.route('/tmp')
     def tmp():
-        return render_template('tmp.html', f="index")
+        return render_template('tmp.html', info=__get_info())
 
 if __name__ == '__main__':
     app.run()
