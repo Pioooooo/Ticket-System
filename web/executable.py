@@ -21,6 +21,10 @@ class Executable:
         self._t.daemon = True
         self._t.start()
 
+    def __del__(self):
+        self._exe.stdin.write('exit\n')
+        self._exe.stdin.flush()
+
     def __readline(self, timeout=None):
         try:
             return self._q.get(block=timeout is not None,
