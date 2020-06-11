@@ -258,7 +258,7 @@ inline void modify_profile(){
         user cur,user;
         cur=user_table.at(hash(cur_username));
         user=user_table.at(hash(new_user.username));
-        if (user.privilege!=-1 && (cur.privilege>user.privilege || strcmp(cur_username,user.username)==0)){
+        if (user.privilege!=-1 && (cur.privilege>user.privilege || strcmp(cur_username,user.username)==0) && (!hg || cur.privilege>new_user.privilege)){
             if (hp) strcpy(user.password,new_user.password);
             if (hn) strcpy(user.name,new_user.name);
             if (hm) strcpy(user.mailAddr,new_user.mailAddr);
