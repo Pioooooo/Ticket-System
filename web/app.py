@@ -210,7 +210,7 @@ def order():
                 return {'e': -1}
             return {'e': 0, 'tot': int(ret[0]), 'result': ret[1:]}
         elif request.json['op'] == 1:
-            ret = core.exec(['refund_ticket', '-n', request.json['n']])
+            ret = core.exec(['refund_ticket', '-u', session['username'], ' - n', request.json['n']])
             return {'e': int(ret[0])}
         else:
             return {'e': -100, 'msg': 'Unrecognized request.'}
