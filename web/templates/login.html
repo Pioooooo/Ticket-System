@@ -293,7 +293,7 @@
                 data: JSON.stringify(dat),
                 success: function (ret) {
                     let btnSMSCode = $("#buttonSMSCode");
-                    btnSMSCode.html(`${ret["e"] ? "发送失败" : "已发送"}`);
+                    btnSMSCode.html(`${ret["e"] ? ret["e"] : "已发送"}`);
                     btnSMSCode.prop("disabled", true);
                 }
             });
