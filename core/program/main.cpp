@@ -6,6 +6,11 @@
 //  Copyright © 2020 apple. All rights reserved.
 //
 
+#define __DEBUG
+#ifdef __DEBUG 
+#include <fstream>
+#endif
+
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -170,6 +175,7 @@ inline void add_user(){
     }else{
         if (session.find(hash(cur_username))==session.end()){
             printf("-1\n");
+            std::cout.flush();
             return;
         }
         user cur_user=user_table.at(hash(cur_username));
@@ -181,6 +187,7 @@ inline void add_user(){
             printf("-1\n");
         }
     }
+    std::cout.flush();
 }
 inline void login(){
     char c;
@@ -199,6 +206,7 @@ inline void login(){
     }else{
         printf("-1\n");
     }
+    std::cout.flush();
 }
 inline void logout(){
     char c;
@@ -215,6 +223,7 @@ inline void logout(){
     }else{
         printf("-1\n");
     }
+    std::cout.flush();
 }
 inline void query_profile(){
     char c;
@@ -238,6 +247,7 @@ inline void query_profile(){
     }else{
         printf("-1\n");
     }
+    std::cout.flush();
 }
 inline void modify_profile(){
     char c;
@@ -271,6 +281,7 @@ inline void modify_profile(){
     }else{
         printf("-1\n");
     }
+    std::cout.flush();
 }
 inline void add_train(){
     char c;
@@ -331,6 +342,7 @@ inline void add_train(){
     }else{
         printf("-1\n");
     }
+    std::cout.flush();
 }
 inline void release_train(){
     char c;
@@ -369,6 +381,7 @@ inline void release_train(){
     }else{
         printf("-1\n");
     }
+    std::cout.flush();
 }
 inline void query_train(){
     char c;
@@ -418,6 +431,7 @@ inline void query_train(){
     }else{
         printf("-1\n");
     }
+    std::cout.flush();
 }
 inline void delete_train(){
     char c;
@@ -435,6 +449,7 @@ inline void delete_train(){
     }else{
         printf("-1\n");
     }
+    std::cout.flush();
 }
 inline void query_ticket(){
     char c;
@@ -499,6 +514,7 @@ inline void query_ticket(){
         datetime datetime1=rcalctimestamp(ans[ansid[i]].leaving_time),datetime2=rcalctimestamp(ans[ansid[i]].arriving_time);
         printf("%s %s %02d-%02d %02d:%02d -> %s %02d-%02d %02d:%02d %d %d\n",ans[ansid[i]].trainID,startstation,datetime1.month,datetime1.day,datetime1.hour,datetime1.minute,endstation,datetime2.month,datetime2.day,datetime2.hour,datetime2.minute,ans[ansid[i]].price,ans[ansid[i]].seat);
     }
+    std::cout.flush();
 }
 inline void query_transfer(){
     char c;
@@ -617,6 +633,7 @@ inline void query_transfer(){
     }else{
         printf("0\n");
     }
+    std::cout.flush();
 }
 inline void buy_ticket(){
     char c;
@@ -710,6 +727,7 @@ inline void buy_ticket(){
     }else{
         printf("-1\n");
     }
+    std::cout.flush();
 }
 inline void query_order(){
     char c;
@@ -733,6 +751,7 @@ inline void query_order(){
             printf("[%s] %s %s %02d-%02d %02d:%02d -> %s %02d-%02d %02d:%02d %d %d\n",status_bl[order.status],order.trainID,order.from,datetime1.month,datetime1.day,datetime1.hour,datetime1.minute,order.to,datetime2.month,datetime2.day,datetime2.hour,datetime2.minute,order.price,order.num);
         }
     }
+    std::cout.flush();
 }
 inline void refund_ticket(){
     char c;
@@ -744,7 +763,7 @@ inline void refund_ticket(){
             default:break;
         }
     }
-    if (session.find(hash(username))==session.end()){printf("-1\n");return;}
+    if (session.find(hash(username))==session.end()){printf("-1\n");std::cout.flush();return;}
     sjtu::vector<order_list> ans=user_order_get(hash(username));
     int realid=0;
     for (int I=(int)ans.size()-1;I>=0;I--){
@@ -754,7 +773,7 @@ inline void refund_ticket(){
             break;
         }
     }
-    if (realid==0){printf("-1\n");return;}
+    if (realid==0){printf("-1\n");std::cout.flush();return;}
     order order=order_table.at(realid);
     if (order.status==2){
         order.status=3;
@@ -762,7 +781,7 @@ inline void refund_ticket(){
         printf("0\n");
         return;
     }
-    if (order.status==3){printf("-1\n");return;}
+    if (order.status==3){printf("-1\n");std::cout.flush();return;}
     train train=train_table.at(hash(order.trainID));
     seatNum seatNum=seat_table.at(train.seatNumId[order.seatid]);
     for (int i=order.startstationid;i<order.endstationid;i++) seatNum.num[i]+=order.num;
@@ -787,6 +806,7 @@ inline void refund_ticket(){
             }
         }
     }
+    std::cout.flush();
 }
 inline void clean(){
     user_table.clear();
@@ -799,12 +819,17 @@ inline void clean(){
     user_order_table.clear();
     train_order_table.clear();
     printf("0\n");
+    std::cout.flush();
 }
 inline void exit(){
     printf("bye\n");
+    std::cout.flush();
     exit(0);
 }
 int main(int argc, const char * argv[]) {
+#ifdef __DEBUG
+    std::ofstream fout("cmd.log");
+#endif
     char cmd[23];
     while (true) {
         scanf("%s",cmd);
@@ -829,6 +854,9 @@ int main(int argc, const char * argv[]) {
          clean
          exit
          */
+#ifdef __DEBUG
+        fout << cmd << std::endl;
+#endif
         if (cmd[0]=='q'){
             if (cmd[9]=='f'){
                 query_profile();

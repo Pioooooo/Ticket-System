@@ -4,7 +4,7 @@ from queue import Queue, Empty
 
 
 class Executable:
-    def __init__(self, s):
+    def __init__(self, s, root='root', password='password'):
         self._exe = Popen(s, stdin=PIPE, stdout=PIPE, stderr=STDOUT, encoding='utf-8')
         self._q = Queue()
 
@@ -18,8 +18,10 @@ class Executable:
 
         self._t = Thread(target=__read,
                          args=(self._exe.stdout, self._q))
-        self._t.daemon = True
+        self._t.setDaemon(True)
         self._t.start()
+        self.exec(['add_user', '-u', root, '-p', password, '-n', '鲁特', '-m', 'root@root.com'])
+        self.exec(['login', '-u', root, '-p', password])
 
     def __del__(self):
         self._exe.stdin.write('exit\n')
@@ -37,12 +39,12 @@ class Executable:
         self._exe.stdin.flush()
         ret = []
         while True:
-            ln = self.__readline(0.1)
+            ln = self.__readline(timeout)
             if not ln:
                 break
             ret.append(ln.rstrip('\n'))
         return ret
 
 
-class EndOfStream:
+class EndOfStream(Exception):
     pass

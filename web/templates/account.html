@@ -98,7 +98,10 @@
                 else
                     this.setCustomValidity("");
                 let iptConfirm = $("#inputPasswordConfirm");
-                iptConfirm.prop("required", $(this).val() !== "");
+                if ($(this).val() !== "")
+                    iptConfirm.prop("required");
+                else
+                    iptConfirm.removeProp("required");
                 iptConfirm.trigger("input");
             });
             $("#inputPasswordConfirm").on("input", function () {

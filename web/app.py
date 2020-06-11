@@ -1,12 +1,37 @@
 from flask import Flask, request, render_template, session, redirect, url_for, abort
-from executable import Executable
+from executable import Executable, EndOfStream
 from requests import post
 
 app = Flask("web")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.jinja_env.auto_reload = True
+if app.debug:
+    app.jinja_env.auto_reload = True
 
-core = Executable('../core/core.exe')
+root = 'root'
+password = 'password'
+core = Executable('../core/core.exe', root, password)
+
+
+def __shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+
+def __exit():
+    global core
+    try:
+        del core
+    except EndOfStream:
+        pass
+    __shutdown_server()
+
+
+if app.debug:
+    @app.before_request
+    def test():
+        print(str(core))
 
 
 def __get_info():
@@ -57,7 +82,11 @@ def login():
             return redirect(url_for(request.args.get('f', 'index')))
     else:
         if request.json['op'] == 0:
-            ret = core.exec(['login', '-u', request.json['username'], '-p', request.json['password']])
+            if request.json['username'] == root and request.json['password'] == password:
+                session['username'] = 'root'
+                return {'e': 0}
+            ret = core.exec(
+                ['login', '-u', request.json['username'], '-p', request.json['password']])
             if int(ret[0]):
                 return {'e': -1}
             else:
@@ -75,9 +104,12 @@ def login():
         elif request.json['op'] == 2:
             if session.get('username') is None:
                 return {'e': -1, 'msg': 'User is not logged in.'}
-            ret = core.exec(['logout', '-u', session.get('username')])
             session.pop('username')
-            return {'e': int(ret[0])}
+            if session.get('username') != 'root':
+                ret = core.exec(['logout', '-u', session.get('username')])
+                return {'e': int(ret[0])}
+            else:
+                return {'e': 0}
         elif request.json['op'] == 3:
             r = post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone'], 'op': 1})
             return r.text
@@ -212,14 +244,20 @@ def account():
 @app.route('/exec', methods=['GET', 'POST'])
 def execute():
     if request.method == 'GET':
-        if session['username'] == 'root':
+        if session.get('username') == root:
             return render_template('execute.html', info=__get_info())
         abort(404)
     else:
-        ret = []
-        for args in request.json['cmd'].split('\n'):
-            ret.append(core.exec([args]))
-        return {'result': ret}
+        if session.get('username') == root:
+            if request.json['op'] == 0:
+                ret = []
+                for args in request.json['cmd'].split('\n'):
+                    ret.append(core.exec([args]))
+                return {'result': ret}
+            elif request.json['op'] == 1:
+                __exit()
+                return {'result': 'shutting down'}
+        return {'result': 'request rejected'}
 
 
 if app.debug:
