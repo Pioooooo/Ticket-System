@@ -396,7 +396,7 @@
                             + parseInt(rows.find(`input[id = "minuteDepart${i + 1}"]`).val()) - parseInt(rows.find(`input[id = "minuteArrive${i}"]`).val()).toString();
                     }).join("|") : "_",
                     "saleDate": $.map($("input[name='inputDate']"), function (e) {
-                        return $(e).val().replace(/[0-9]*-/, "");
+                        return $(e).val().slice(-5);
                     }).join("|")
                 };
                 $.ajax({
