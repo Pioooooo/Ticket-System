@@ -82,7 +82,8 @@
                     dataType: "json",
                     data: JSON.stringify(dat),
                     success: function (ret) {
-                        showMessage(`<div class='modal-body'><pre>${syntaxHighlight(JSON.stringify(ret, null, 4))}</pre></div>`, "执行结果", "modal-dialog-centered modal-dialog-scrollable modal-lg");
+                        showMessage(`<div class="modal-body" id="textMessage"><pre>${syntaxHighlight(JSON.stringify(ret, null, 4))}</pre></div>`,
+                            "执行结果", "modal-dialog-centered modal-dialog-scrollable modal-lg");
                     }
                 });
                 return false;

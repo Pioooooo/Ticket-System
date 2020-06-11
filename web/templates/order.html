@@ -51,7 +51,7 @@
                 dataType: "json",
                 data: JSON.stringify(dat),
                 success: function (ret) {
-                    showMessage(`<div class='modal-body'>退票${ret["e"] ? "失败，请重试" : "成功"}。</div>`);
+                    showMessage(`<div class="modal-body" id="textMessage">退票${ret["e"] ? "失败，请重试" : "成功"}。</div>`);
                     if (!ret["e"])
                         $("#buttonRefresh").click();
                 }
@@ -84,7 +84,7 @@
 
                 table.append($(row));
                 $(`#buttonRefund${n}`).click(function () {
-                    refundTicket(n);
+                    refundTicket(n + 1);
                 });
             });
             if (!tot)

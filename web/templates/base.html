@@ -80,7 +80,7 @@
                         <span>&times;</span>
                     </button>
                 </div>
-                <div id="textMessage"></div>
+                <div class="modal-body" id="textMessage"></div>
                 <div class="modal-footer text-center">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
                 </div>
@@ -105,7 +105,7 @@
         modal.modal("hide");
         $("#titleMessage").html(title);
         $("#modalDialog").prop("class", `modal-dialog ${classname}`);
-        $("#textMessage").html(html);
+        $("#textMessage").replaceWith($(html));
         modal.modal("show");
     }
 

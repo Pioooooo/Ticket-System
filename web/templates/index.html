@@ -95,11 +95,11 @@
                 data: JSON.stringify(dat),
                 success: function (ret) {
                     if (ret["e"])
-                        showMessage("<div class='modal-body'>购票失败，请重试。</div>");
+                        showMessage("<div class='modal-body' id='textMessage'>购票失败，请重试。</div>");
                     else if (ret["tot"] === "queue")
-                        showMessage("<div class='modal-body'>余票不足，已加入候补购票队列。</div>");
+                        showMessage("<div class='modal-body' id='textMessage'>余票不足，已加入候补购票队列。</div>");
                     else
-                        showMessage(`<div class="modal-body">购票成功，总价${ret["tot"]}￥</div>`);
+                        showMessage(`<div class="modal-body" id="textMessage">购票成功，总价${ret["tot"]}￥</div>`);
                     $("#buttonQuery").click();
                 }
             });
