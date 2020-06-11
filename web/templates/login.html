@@ -213,7 +213,7 @@
                 success: function (ret) {
                     if (ret["e"]) {
                         if (ret["e"] === 1)
-                            window.location.replace("/phoneverify")
+                            window.location.replace("/phoneverify");
                         else
                             $("#toastLoginFailed").toast("show");
                     } else
@@ -257,7 +257,7 @@
                             success: function () {
                                 if (ret["e"]) {
                                     if (ret["e"] === 1)
-                                        window.location.replace("/phoneverify")
+                                        window.location.replace("/phoneverify");
                                     else
                                         $("#toastLoginFailed").toast("show");
                                 } else
@@ -272,7 +272,7 @@
         $("#buttonSMSCode").click(function (e) {
             let iptPhone = $("#inputPhone");
             if (iptPhone[0].validity.valueMissing) {
-                iptPhone[0].setCustomValidity("请填写手机号。")
+                iptPhone[0].setCustomValidity("请填写手机号。");
                 iptPhone.focus();
                 return false;
             } else if (iptPhone[0].validity.patternMismatch) {
