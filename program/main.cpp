@@ -492,8 +492,8 @@ inline void query_ticket(){
             tmp>>=1;id++;
         }
     }
-    if (hp && p[0]=='t') std::sort(ansid.begin(),ansid.end(),[](const int &a, const int &b){return (ans[a].arriving_time-ans[a].leaving_time)<(ans[b].arriving_time-ans[b].leaving_time) || ((ans[a].arriving_time-ans[a].leaving_time)<(ans[b].arriving_time-ans[b].leaving_time) && strcmp(ans[a].trainID,ans[b].trainID)>=0);});
-    else std::sort(ansid.begin(),ansid.end(),[](const int &a, const int &b){return ans[a].price<ans[b].price || (ans[a].price<ans[b].price && strcmp(ans[a].trainID,ans[b].trainID)>=0);});
+    if (hp && p[0]=='t') std::sort(ansid.begin(),ansid.end(),[](const int &a, const int &b){return (ans[a].arriving_time-ans[a].leaving_time)<(ans[b].arriving_time-ans[b].leaving_time) || ((ans[a].arriving_time-ans[a].leaving_time)<(ans[b].arriving_time-ans[b].leaving_time) && strcmp(ans[a].trainID,ans[b].trainID)<=0);});
+    else std::sort(ansid.begin(),ansid.end(),[](const int &a, const int &b){return ans[a].price<ans[b].price || (ans[a].price<ans[b].price && strcmp(ans[a].trainID,ans[b].trainID)<=0);});
     printf("%d\n",(int)ans.size());
     for (int i=0;i<ans.size();i++){
         datetime datetime1=rcalctimestamp(ans[ansid[i]].leaving_time),datetime2=rcalctimestamp(ans[ansid[i]].arriving_time);
