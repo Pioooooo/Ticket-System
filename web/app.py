@@ -104,11 +104,12 @@ def login():
         elif request.json['op'] == 2:
             if session.get('username') is None:
                 return {'e': -1, 'msg': 'User is not logged in.'}
-            session.pop('username')
             if session.get('username') != 'root':
+                session.pop('username')
                 ret = core.exec(['logout', '-u', session.get('username')])
                 return {'e': int(ret[0])}
             else:
+                session.pop('username')
                 return {'e': 0}
         elif request.json['op'] == 3:
             r = post('http://127.0.0.1:8000/sendcode.php', {'phone': request.json['phone'], 'op': 1})
