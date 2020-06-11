@@ -561,7 +561,7 @@ inline void query_transfer(){
                                                 timestamp2+=train2.travelTimes[i]+train2.stopoverTimes[i];
                                                 if (sta>=0) {price2+=train2.prices[i];}
                                             }
-                                            if (done>=0){
+                                            if (done>=0 && hash(train.trainID)!=hash(train2.trainID)){
                                                 timestamp2=calctimestamp(train2.saleDate[0],train2.saleDate[1],train2.startTime[0],train2.startTime[1]);
                                                 datetime temp=rcalctimestamp(starttimestamp2);
                                                 int ts=calctimestamp(temp.month,temp.day),tt=ts+(calctimestamp(train2.saleDate[2],train2.saleDate[3])-calctimestamp(train2.saleDate[0],train2.saleDate[1]));
