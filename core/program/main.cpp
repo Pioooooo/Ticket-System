@@ -6,7 +6,7 @@
 //  Copyright © 2020 apple. All rights reserved.
 //
 
-#define __DEBUG
+//#define __DEBUG
 #ifdef __DEBUG 
 #include <fstream>
 #endif
