@@ -70,11 +70,9 @@
                                        name="inputDate">
                             </div>
                             <div>
-                                <div class="btn-group">
-                                    <button class="btn btn-outline-secondary" type="button" id="buttonAddDate">
-                                        <span class="feather feather-plus"></span>
-                                    </button>
-                                </div>
+                                <button class="btn btn-outline-secondary" type="button" id="buttonAddDate">
+                                    <span class="feather feather-plus"></span>
+                                </button>
                             </div>
                         </div>
                         <div class="row">
@@ -157,7 +155,7 @@
     <script>
         let operation,
             btnRemoveDate = $(`<button class="btn btn-outline-secondary" type="button" id="buttonRemoveDate">` +
-                `<span class="feather feather-minus"></span></button>`);
+                `<span class="feather feather-minus"></span></button>`), btnAddDate = $("#buttonAddDate");
 
         function addRow() {
             let divStations = $("#divStations"), len = divStations.children().length;
@@ -306,25 +304,25 @@
                 else
                     this.setCustomValidity("");
             });
-            $("#buttonAddDate").click(function () {
+            $(document).on("click", "#buttonAddDate", function () {
                 let divDates = $("#divDates");
+                if (divDates.children().length === 4)
+                    return;
                 divDates.children().last().before($(`<div class="mb-3 pl-1 pr-1  width">` +
                     `<input class="form-control" style="width: 195px" type="date" name="inputDate"></div>`));
                 divDates.children().last().prev().collapse("show");
-                if (divDates.children().length === 4) {
-                    this.before(btnRemoveDate[0]);
-                }
+                if (divDates.children().length === 4)
+                    btnAddDate.replaceWith(btnRemoveDate);
             });
-            btnRemoveDate.click(function () {
+            $(document).on("click", "#buttonRemoveDate", function () {
                 let divDates = $("#divDates");
                 if (divDates.children().length === 3)
                     return;
                 divDates.children().last().prev().collapse("hide");
                 divDates.children().last().prev().on("hidden.bs.collapse", function () {
                     $(this).remove();
-                    if (divDates.children().length === 3) {
-                        btnRemoveDate.detach();
-                    }
+                    if (divDates.children().length === 3)
+                        btnRemoveDate.replaceWith(btnAddDate);
                 });
             });
             $("input[id^='hour'],input[id^='minute'],input[id^='inputPrice'],#inputSeatNumber").inputFilter(function (str) {
@@ -359,6 +357,7 @@
                 $("#formTrain input").not($("#inputTrainId, #inputDate").prop("required", true)).prop("required", false).val("");
             });
             $("#buttonAddTrain").click(function () {
+                btnAddDate.click();
                 $("#formTrain input").prop("required", true);
                 operation = 4;
             });
@@ -399,6 +398,11 @@
                         return $(e).val().slice(-5);
                     }).join("|")
                 };
+                if (dat["op"] === 4 && !dat["saleDate"].find("|")) {
+                    btnAddDate.click();
+                    showInfo("添加列车必须有发售日期与结售日期。");
+                    return;
+                }
                 $.ajax({
                     type: "POST",
                     contentType: "application/json",
