@@ -26,7 +26,7 @@ sjtu::BTree<unsigned long long, user> user_table("user_table.data","user_table.d
 sjtu::map<unsigned long long, bool> session;
 struct train{
     char trainID[21],stations[100][31],type[2];
-    int stationNum,seatNumId[93],prices[100],startTime[2],travelTimes[100],stopoverTimes[100],saleDate[4];
+    int stationNum,seatNum,seatNumId[93],prices[100],startTime[2],travelTimes[100],stopoverTimes[100],saleDate[4];
     int release;
     train(){release=-1;}
 };
@@ -281,7 +281,7 @@ inline void add_train(){
             case 'i':scanf("%s",train.trainID);break;
             case 'n':scanf("%d",&train.stationNum);break;
             case 'm':{
-                scanf("%d",&train.seatNumId[0]);
+                scanf("%d",&train.seatNum);
                 break;
             }
             case 's':{
@@ -354,7 +354,7 @@ inline void release_train(){
                 station tmp=station_table.at(hash(train.stations[i]));tmp.set(id);
                 station_table.modify(hash(train.stations[i]),tmp);
             }
-            seat.num[i]=train.seatNumId[0];
+            seat.num[i]=train.seatNum;
         }
         int ss=calctimestamp(train.saleDate[0],train.saleDate[1]),st=calctimestamp(train.saleDate[2],train.saleDate[3]);
         int days=(st-ss)/1440+1;
@@ -410,7 +410,7 @@ inline void query_train(){
             printf(" %d ",price);price+=train.prices[i];
             if (i==train.stationNum-1) printf("x");
             else{
-                if (bs) printf("%d",train.seatNumId[0]);
+                if (bs) printf("%d",train.seatNum);
                 else printf("%d",seat.num[i]);
             }
             printf("\n");
@@ -599,7 +599,6 @@ inline void query_transfer(){
                                     }
                                 }
                             }
-                            
                         }
                         timestamp+=train.travelTimes[i];if (i>sta) timestamp+=train.stopoverTimes[i-1];
                         price+=train.prices[i];seat=std::min(seat,seatNum.num[i]);
@@ -635,7 +634,8 @@ inline void buy_ticket(){
     }
     if (session.find(hash(username))==session.end()){printf("-1\n");return;}
     train train=train_table.at(hash(trainID));
-    if (train.release==-1){printf("-1\n");return;}
+    if (train.release!=1){printf("-1\n");return;}
+    if (train.seatNum<num){printf("-1\n");return;}
     int timestamp=calctimestamp(train.saleDate[0],train.saleDate[1],train.startTime[0],train.startTime[1]),price=0,seat=23333333;
     int sta=-1,done=-1;
     int starttimestamp=0,endtimestamp=0;
