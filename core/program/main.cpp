@@ -6,10 +6,6 @@
 //  Copyright © 2020 apple. All rights reserved.
 //
 
-#ifdef __DEBUG
-#include <fstream>
-#endif
-
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -29,7 +25,7 @@ struct user {
 sjtu::BTree<unsigned long long, user> user_table("user_table.data","user_table.data2");
 struct train{
     char trainID[21],stations[100][31],type[2];
-    int stationNum,seatNumId[93],prices[100],startTime[2],travelTimes[100],stopoverTimes[100],saleDate[4];
+    int stationNum,seatNum,seatNumId[93],prices[100],startTime[2],travelTimes[100],stopoverTimes[100],saleDate[4];
     int release;
     train(){release=-1;}
 };
@@ -274,7 +270,7 @@ inline void add_train(){
             case 'i':scanf("%s",train.trainID);break;
             case 'n':scanf("%d",&train.stationNum);break;
             case 'm':{
-                scanf("%d",&train.seatNumId[0]);
+                scanf("%d",&train.seatNum);
                 break;
             }
             case 's':{
@@ -347,7 +343,7 @@ inline void release_train(){
                 station tmp=station_table.at(hash(train.stations[i]));tmp.set(id);
                 station_table.modify(hash(train.stations[i]),tmp);
             }
-            seat.num[i]=train.seatNumId[0];
+            seat.num[i]=train.seatNum;
         }
         int ss=calctimestamp(train.saleDate[0],train.saleDate[1]),st=calctimestamp(train.saleDate[2],train.saleDate[3]);
         int days=(st-ss)/1440+1;
@@ -403,7 +399,7 @@ inline void query_train(){
             printf(" %d ",price);price+=train.prices[i];
             if (i==train.stationNum-1) printf("x");
             else{
-                if (bs) printf("%d",train.seatNumId[0]);
+                if (bs) printf("%d",train.seatNum);
                 else printf("%d",seat.num[i]);
             }
             printf("\n");
@@ -485,8 +481,8 @@ inline void query_ticket(){
             tmp>>=1;id++;
         }
     }
-    if (hp && p[0]=='t') std::sort(ansid.begin(),ansid.end(),[](const int &a, const int &b){return (ans[a].arriving_time-ans[a].leaving_time)<(ans[b].arriving_time-ans[b].leaving_time);});
-    else std::sort(ansid.begin(),ansid.end(),[](const int &a, const int &b){return ans[a].price<ans[b].price;});
+    if (hp && p[0]=='t') std::sort(ansid.begin(),ansid.end(),[](const int &a, const int &b){return (ans[a].arriving_time-ans[a].leaving_time)<(ans[b].arriving_time-ans[b].leaving_time) || ((ans[a].arriving_time-ans[a].leaving_time)==(ans[b].arriving_time-ans[b].leaving_time) && strcmp(ans[a].trainID,ans[b].trainID)<0);});
+    else std::sort(ansid.begin(),ansid.end(),[](const int &a, const int &b){return ans[a].price<ans[b].price || (ans[a].price==ans[b].price && strcmp(ans[a].trainID,ans[b].trainID)<0);});
     printf("%d\n",(int)ans.size());
     for (int i=0;i<ans.size();i++){
         datetime datetime1=rcalctimestamp(ans[ansid[i]].leaving_time),datetime2=rcalctimestamp(ans[ansid[i]].arriving_time);
@@ -554,7 +550,7 @@ inline void query_transfer(){
                                                 timestamp2+=train2.travelTimes[i]+train2.stopoverTimes[i];
                                                 if (sta>=0) {price2+=train2.prices[i];}
                                             }
-                                            if (done>=0){
+                                            if (done>=0 && hash(train.trainID)!=hash(train2.trainID)){
                                                 timestamp2=calctimestamp(train2.saleDate[0],train2.saleDate[1],train2.startTime[0],train2.startTime[1]);
                                                 datetime temp=rcalctimestamp(starttimestamp2);
                                                 int ts=calctimestamp(temp.month,temp.day),tt=ts+(calctimestamp(train2.saleDate[2],train2.saleDate[3])-calctimestamp(train2.saleDate[0],train2.saleDate[1]));
@@ -592,9 +588,8 @@ inline void query_transfer(){
                                     }
                                 }
                             }
-                            timestamp+=train.stopoverTimes[i-1];
                         }
-                        timestamp+=train.travelTimes[i];
+                        timestamp+=train.travelTimes[i];if (i>sta) timestamp+=train.stopoverTimes[i-1];
                         price+=train.prices[i];seat=std::min(seat,seatNum.num[i]);
                     }
                 }
@@ -627,7 +622,8 @@ inline void buy_ticket(){
         }
     }
     train train=train_table.at(hash(trainID));
-    if (train.release==-1){printf("-1\n");return;}
+    if (train.release!=1){printf("-1\n");return;}
+    if (train.seatNum<num){printf("-1\n");return;}
     int timestamp=calctimestamp(train.saleDate[0],train.saleDate[1],train.startTime[0],train.startTime[1]),price=0,seat=23333333;
     int sta=-1,done=-1;
     int starttimestamp=0,endtimestamp=0;
@@ -795,9 +791,6 @@ inline void exit(){
     exit(0);
 }
 int main(int argc, const char * argv[]) {
-#ifdef __DEBUG
-    std::ofstream fout("cmd.log");
-#endif
     char cmd[23];
     while (true) {
         scanf("%s",cmd);
@@ -822,9 +815,6 @@ int main(int argc, const char * argv[]) {
          clean
          exit
          */
-#ifdef __DEBUG
-        fout << cmd << std::endl;
-#endif
         if (cmd[0]=='q'){
             if (cmd[9]=='f'){
                 query_profile();
