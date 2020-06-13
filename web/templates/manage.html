@@ -398,7 +398,7 @@
                         return $(e).val().slice(-5);
                     }).join("|")
                 };
-                if (dat["op"] === 4 && !dat["saleDate"].find("|")) {
+                if (dat["op"] === 4 && !dat["saleDate"].includes("|")) {
                     btnAddDate.click();
                     showInfo("添加列车必须有发售日期与结售日期。");
                     return;
