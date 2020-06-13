@@ -588,32 +588,32 @@ namespace sjtu {
                 fwrite(root, Node_siz, 1, file);
                 basic->root = root->pos;
 //                head = new Node(root->pos + Node_siz);
-                head = (Node *)malloc(Node_siz);
-                memset(head, 0, Node_siz);
-                fseek(file, 0, SEEK_END);
-                head->pos = ftell(file);
-                fwrite(head, Node_siz, 1, file);
-                basic->head = head->pos;
+//                head = (Node *)malloc(Node_siz);
+//                memset(head, 0, Node_siz);
+//                fseek(file, 0, SEEK_END);
+//                head->pos = ftell(file);
+//                fwrite(head, Node_siz, 1, file);
+//                basic->head = head->pos;
 //                tail = new Node(head->pos + Node_siz);
-                tail = (Node *)malloc(Node_siz);
-                memset(tail, 0, Node_siz);
-                fseek(file, 0, SEEK_END);
-                tail->pos = ftell(file);
-                fwrite(tail, Node_siz, 1, file);
-                basic->tail = tail->pos;
+//                tail = (Node *)malloc(Node_siz);
+//                memset(tail, 0, Node_siz);
+//                fseek(file, 0, SEEK_END);
+//                tail->pos = ftell(file);
+//                fwrite(tail, Node_siz, 1, file);
+//                basic->tail = tail->pos;
                 root->is_leaf = true;
-                head->nex = root->pos;
-                root->pre = head->pos;
-                tail->pre = root->pos;
-                root->nex = tail->pos;
+//                head->nex = root->pos;
+//                root->pre = head->pos;
+//                tail->pre = root->pos;
+//                root->nex = tail->pos;
                 basic->siz = 0;
                 basic->free_num = 0;
                 fseek(file, 0, SEEK_SET);
                 fwrite(basic, basic_siz, 1, file);
                 fseek(file, root->pos, SEEK_SET);
                 fwrite(root, Node_siz, 1, file);
-                _write(&head);
-                _write(&tail);
+//                _write(&head);
+//                _write(&tail);
             }
 
         }
@@ -631,8 +631,8 @@ namespace sjtu {
                 fwrite(basic, Node_siz, 1, file);
             }
             _write(&root);
-            _write(&head);
-            _write(&tail);
+//            _write(&head);
+//            _write(&tail);
             fclose(file);
             fclose(val_file);
         }
@@ -662,32 +662,32 @@ namespace sjtu {
             fwrite(root, Node_siz, 1, file);
             basic->root = root->pos;
 //                head = new Node(root->pos + Node_siz);
-            head = (Node *)malloc(Node_siz);
-            memset(head, 0, Node_siz);
-            fseek(file, 0, SEEK_END);
-            head->pos = ftell(file);
-            fwrite(head, Node_siz, 1, file);
-            basic->head = head->pos;
+//            head = (Node *)malloc(Node_siz);
+//            memset(head, 0, Node_siz);
+//            fseek(file, 0, SEEK_END);
+//            head->pos = ftell(file);
+//            fwrite(head, Node_siz, 1, file);
+//            basic->head = head->pos;
 //                tail = new Node(head->pos + Node_siz);
-            tail = (Node *)malloc(Node_siz);
-            memset(tail, 0, Node_siz);
-            fseek(file, 0, SEEK_END);
-            tail->pos = ftell(file);
-            fwrite(tail, Node_siz, 1, file);
-            basic->tail = tail->pos;
+//            tail = (Node *)malloc(Node_siz);
+//            memset(tail, 0, Node_siz);
+//            fseek(file, 0, SEEK_END);
+//            tail->pos = ftell(file);
+//            fwrite(tail, Node_siz, 1, file);
+//            basic->tail = tail->pos;
             root->is_leaf = true;
-            head->nex = root->pos;
-            root->pre = head->pos;
-            tail->pre = root->pos;
-            root->nex = tail->pos;
+//            head->nex = root->pos;
+//            root->pre = head->pos;
+//            tail->pre = root->pos;
+//            root->nex = tail->pos;
             basic->siz = 0;
             basic->free_num = 0;
             fseek(file, 0, SEEK_SET);
             fwrite(basic, basic_siz, 1, file);
             fseek(file, root->pos, SEEK_SET);
             fwrite(root, Node_siz, 1, file);
-            _write(&head);
-            _write(&tail);
+//            _write(&head);
+//            _write(&tail);
         }
 
         size_t size() {
