@@ -751,7 +751,7 @@ namespace sjtu {
                 Value val;
                 fseek(val_file, p.first->info[p.second].second, SEEK_SET);
                 fread(&val, sizeof(Value), 1, val_file);
-                write_all();
+//                write_all();
                 return val;
             }
             return Value();
