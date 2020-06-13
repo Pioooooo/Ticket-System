@@ -64,7 +64,7 @@
     <script src="{{ url_for("static",filename="js/seedrandom.min.js") }}"></script>
     <script>
         $(function () {
-            Math.seedrandom("{{ info["username"] }}");
+            Math.seedrandom("{{ info["name"] }}");
             $("img[data-letter]").each(function (k, e) {
                 let canvas = $("<canvas></canvas>")[0];
                 let context = canvas.getContext("2d");
@@ -136,15 +136,9 @@
                             showInfo("修改个人信息失败。");
                         else {
                             showInfo("修改个人信息成功");
-                            let result = ret["result"].split(" ");
-                            $("#tabName").html(result[1]);
-                            iptName.prop("placeholder", result[1]);
-                            iptName.val("");
-                            $("#textName").html(result[1]);
-                            iptEmail.prop("placeholder", result[2]);
-                            iptEmail.val("");
-                            $("#textEmail").html(result[2]);
-                            $("input[id^='inputPassword']").val("");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 2000)
                         }
                     }
                 });
