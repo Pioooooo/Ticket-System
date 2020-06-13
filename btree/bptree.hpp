@@ -22,8 +22,8 @@ namespace sjtu {
         FILE *file;
         FILE *val_file;
         Compare cmp;
-        static const size_t MAX_SIZ = 100;
-        static const size_t MIN_SIZ = 50;
+        static const size_t MAX_SIZ = 200;
+        static const size_t MIN_SIZ = 100;
 
         class basic_info{
         public:
@@ -742,6 +742,7 @@ namespace sjtu {
                 write_all();
                 return true;
             }
+            write_all();
             return false;
         }
 
@@ -751,17 +752,16 @@ namespace sjtu {
                 Value val;
                 fseek(val_file, p.first->info[p.second].second, SEEK_SET);
                 fread(&val, sizeof(Value), 1, val_file);
-                write_all();
+//                write_all();
                 return val;
             }
+//            write_all();
             return Value();
         }
 
         bool find(const Key &key) {
             position p = search(key);
-            if (p.first != nullptr)
-                return true;
-            return false;
+            return p.first != nullptr;
         }
 
         bool end(){
@@ -771,8 +771,10 @@ namespace sjtu {
         bool erase(const Key &key) {
             if (basic->siz == 0) return false;
             position pos = search(key);
-            if (pos.first == nullptr)
+            if (pos.first == nullptr){
+                write_all();
                 return false;
+            }
             --basic->siz;
             Node *cur_node = pos.first;
             size_t cur_pos = pos.second;
