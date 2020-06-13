@@ -410,7 +410,7 @@ inline void query_train(){
             printf(" %d ",price);price+=train.prices[i];
             if (i==train.stationNum-1) printf("x");
             else{
-                if (bs) printf("%d",train.seatNumId[0]);
+                if (bs) printf("%d",train.seatNum);
                 else printf("%d",seat.num[i]);
             }
             printf("\n");
