@@ -465,7 +465,7 @@ namespace sjtu {
                     position parent;
                     parent.first = par;
                     parent.second = 1;
-                    if (par != root && root->siz != 1) {
+                    if (par != root || root->siz != 1) {
                         erase_inner(parent);
                         return;
                     } else {
@@ -502,7 +502,7 @@ namespace sjtu {
                     position parent;
                     parent.first = par;
                     parent.second = cur_pos;
-                    if (par != root && root->siz != 1) {
+                    if (par != root || root->siz != 1) {
                         erase_inner(parent);
                         return;
                     } else{
