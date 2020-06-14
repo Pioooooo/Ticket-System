@@ -124,6 +124,8 @@ namespace sjtu {
         }
 
         void write_all(){
+            if (num < 500)
+                return;
             while (num > 0){
                 _write(&pool[occupied[num--]]);
             }
@@ -232,7 +234,12 @@ namespace sjtu {
                 new_pos = basic->free_pos[basic->free_num--];
             }
             size_t p = new_pos % pool_siz;
-            occupied[++num] = p;
+            if(pool[p] == nullptr) {
+                occupied[++num] = p;
+            } else{
+                fseek(file, pool[p]->pos, SEEK_SET);
+                fwrite(pool[p], Node_siz, 1, file);
+            }
             pool[p] = (Node *)malloc(Node_siz);
             memset(pool[p], 0, Node_siz);
             Node *new_node = pool[p];
@@ -258,8 +265,15 @@ namespace sjtu {
                 } else {
                     np = basic->free_pos[basic->free_num--];
                 }
-                occupied[++num] = pos->pos % pool_siz;
-                pool[pos->pos % pool_siz] = root;
+                size_t _p = pos->pos % pool_siz;
+                if(pool[_p] == nullptr) {
+                    occupied[++num] = _p;
+                    pool[_p] = root;
+                } else{
+                    fseek(file, pool[_p]->pos, SEEK_SET);
+                    fwrite(pool[_p], Node_siz, 1, file);
+                    pool[_p] = root;
+                }
                 root = (Node *)malloc(Node_siz);
                 memset(root, 0, Node_siz);
                 root->pos = np;
@@ -283,7 +297,12 @@ namespace sjtu {
                 new_pos = basic->free_pos[basic->free_num--];
             }
             size_t p = new_pos % pool_siz;
-            occupied[++num] = p;
+            if(pool[p] == nullptr) {
+                occupied[++num] = p;
+            } else{
+                fseek(file, pool[p]->pos, SEEK_SET);
+                fwrite(pool[p], Node_siz, 1, file);
+            }
             pool[p] = (Node *)malloc(Node_siz);
             memset(pool[p], 0, Node_siz);
             Node *new_node = pool[p];
@@ -307,8 +326,14 @@ namespace sjtu {
                 } else {
                     np = basic->free_pos[basic->free_num--];
                 }
-                occupied[++num] = pos->pos % pool_siz;
-                pool[pos->pos % pool_siz] = root;
+                size_t _p = pos->pos % pool_siz;
+                if(pool[_p] == nullptr) {
+                    occupied[++num] = _p;
+                } else{
+                    fseek(file, pool[_p]->pos, SEEK_SET);
+                    fwrite(pool[_p], Node_siz, 1, file);
+                }
+                pool[_p] = root;
                 root = (Node *)malloc(Node_siz);
                 memset(root, 0, Node_siz);
                 root->pos = np;
