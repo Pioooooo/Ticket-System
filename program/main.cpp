@@ -34,8 +34,9 @@ sjtu::BTree<unsigned long long, train> train_table("train_table.data","train_tab
 struct seatNum{int num[100];};
 sjtu::BTree<int, seatNum> seat_table("seat_table.data","seat_table.data2");
 sjtu::BTree<int, unsigned long long> release_table("release_table.data","release_table.data2");
+const int trainbitsize=250;
 struct station{
-    unsigned int trainbit[233];
+    unsigned int trainbit[trainbitsize];
     station(){memset(trainbit,0,sizeof(trainbit));}
     inline void set(int p){
         p--;
@@ -451,7 +452,7 @@ inline void query_ticket(){
     station ss=station_table.at(hash(startstation)),st=station_table.at(hash(endstation));
     static sjtu::vector<ticket> ans;ans.clear();
     static sjtu::vector<int> ansid;ansid.clear();
-    for (int i=0;i<233;i++) {
+    for (int i=0;i<trainbitsize;i++) {
         unsigned int tmp=ss.trainbit[i]&st.trainbit[i],id=i*32+1;
         while (tmp>0){
             if (tmp&1){
@@ -514,7 +515,7 @@ inline void query_transfer(){
     }
     station ss=station_table.at(hash(startstation)),st=station_table.at(hash(endstation));
     ticket ans1,ans2;char midstation[31];
-    for (int i=0;i<233;i++) {
+    for (int i=0;i<trainbitsize;i++) {
         unsigned int tmp=ss.trainbit[i],id=i*32+1;
         while (tmp>0){
             if (tmp&1){
@@ -540,7 +541,7 @@ inline void query_transfer(){
                             {
                                 char station3[31];strcpy(station3,train.stations[i]);
                                 station s3=station_table.at(hash(station3));
-                                for (int i=0;i<233;i++) {
+                                for (int i=0;i<trainbitsize;i++) {
                                     unsigned int tmp=s3.trainbit[i]&st.trainbit[i],id=i*32+1;
                                     while (tmp>0){
                                         if (tmp&1){
