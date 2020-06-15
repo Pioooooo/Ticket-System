@@ -22,8 +22,8 @@ namespace sjtu {
         FILE *file;
         FILE *val_file;
         Compare cmp;
-        static const size_t MAX_SIZ = 200;
-        static const size_t MIN_SIZ = 100;
+        static const size_t MAX_SIZ = (4088 - sizeof(size_t)*2 - sizeof(off_t) - sizeof(bool)) / sizeof(sub_node);
+        static const size_t MIN_SIZ = MAX_SIZ / 2;
 
         class basic_info{
         public:
