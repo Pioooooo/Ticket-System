@@ -124,7 +124,7 @@ namespace sjtu {
         }
 
         void write_all(){
-            if (num < 400)
+            if (num < 360)
                 return;
             while (num > 0){
                 _write(&pool[occupied[num--]]);
