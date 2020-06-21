@@ -103,7 +103,7 @@ namespace sjtu {
             }
         }
 
-        Node **_read(const off_t pos){ //without dealing with hash collision..........
+        Node **_read(const off_t pos){
             size_t p = pos % pool_siz;
             if (pool[p] == nullptr) {
                 occupied[++num] = p;
@@ -124,7 +124,7 @@ namespace sjtu {
         }
 
         void write_all(){
-            if (num < 350)
+            if (num < 400)
                 return;
             while (num > 0){
                 _write(&pool[occupied[num--]]);
