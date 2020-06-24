@@ -25,16 +25,16 @@ struct user {
 sjtu::BTree<unsigned long long, user> user_table("user_table.data","user_table.data2");
 sjtu::map<unsigned long long, bool> session;
 struct train{
-    char trainID[21],stations[20][31],type[2];
-    int stationNum,seatNum,seatNumId[93],prices[20],startTime[2],travelTimes[20],stopoverTimes[20],saleDate[4];
+    char trainID[21],stations[100][31],type[2];
+    int stationNum,seatNum,seatNumId[93],prices[100],startTime[2],travelTimes[100],stopoverTimes[100],saleDate[4];
     int release;
     train(){release=-1;}
 };
 sjtu::BTree<unsigned long long, train> train_table("train_table.data","train_table.data2");
-struct seatNum{int num[20];};
+struct seatNum{int num[100];};
 sjtu::BTree<int, seatNum> seat_table("seat_table.data","seat_table.data2");
 sjtu::BTree<int, unsigned long long> release_table("release_table.data","release_table.data2");
-const int trainbitsize=259;
+const int trainbitsize=500;
 struct station{
     unsigned int trainbit[trainbitsize];
     station(){memset(trainbit,0,sizeof(trainbit));}
