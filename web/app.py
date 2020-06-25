@@ -52,7 +52,7 @@ def index():
             ret = core.exec(
                 ['query_transfer', '-s', request.json['from'], '-t', request.json['to'], '-d', request.json['date'],
                  '-p', request.json['sorting']])
-            return {'e': 0, 'tot': 2, 'result': ret}
+            return {'e': 0, 'tot': 0 if not int(ret[0]) else 2, 'result': ret}
         elif request.json['op'] == 1:
             ret = core.exec(
                 ['query_ticket', '-s', request.json['from'], '-t', request.json['to'], '-d', request.json['date'], '-p',
